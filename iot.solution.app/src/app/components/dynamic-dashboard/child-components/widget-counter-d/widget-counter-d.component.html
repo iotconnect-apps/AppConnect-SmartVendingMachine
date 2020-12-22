@@ -1,0 +1,23 @@
+<div class="dashboard-chart text-center">
+	<div class="m-t-5 text-center icon-content" *ngIf="widget.widgetProperty?.contents?.entitiesIcon?.isRequired">
+		<i [ngStyle]="{'color':widget.widgetProperty?.contents?.entitiesIcon?.fontColor}"  class="{{widget?.widgetProperty?.contents?.entitiesIcon?.iconClass}} fa-{{widget?.widgetProperty?.contents?.entitiesIcon?.fontSize}}x"></i>
+	</div>
+	<div class="m-t-5 widget-readings-box">
+		<div class="widget-reading-right">
+			<ul class="reading-item-list">
+				<li class="reading-item">
+					<span class="elevator-status-indicator status-danger"></span>
+					<span class="m-l-10" [ngStyle]="{'font-size':widget.widgetProperty?.contents?.activeCount?.fontSize+'px','font-family':widget.widgetProperty?.contents?.activeCount?.fontFamily,'color':widget.widgetProperty?.contents?.activeCount?.fontColor}">{{count.maxDeviceCount | shortNumber}}</span>
+					<strong class="m-l-15" [ngStyle]="{'font-size':widget.widgetProperty?.contents?.active?.fontSize+'px','font-family':widget.widgetProperty?.contents?.active?.fontFamily,'color':widget.widgetProperty?.contents?.active?.fontColor}">{{widget?.widgetProperty?.contents?.active?.title}}&nbsp;{{count?.maxDeviceName?count.maxDeviceName:'-'}}</strong>
+				</li>
+				<li class="reading-item">
+					<span class="elevator-status-indicator status-success"></span>
+					<span class="m-l-10" [ngStyle]="{ 'font-size':widget.widgetProperty?.contents?.inactiveCount?.fontSize+'px', 'font-family':widget.widgetProperty?.contents?.inactiveCount?.fontFamily, 'color':widget.widgetProperty?.contents?.inactiveCount?.fontColor}">{{count.minDeviceCount | shortNumber}}</span>
+					<strong class="m-l-15" [ngStyle]="{ 'font-size':widget.widgetProperty?.contents?.inactive?.fontSize+'px', 'font-family':widget.widgetProperty?.contents?.inactive?.fontFamily, 'color':widget.widgetProperty?.contents?.inactive?.fontColor}">{{widget?.widgetProperty?.contents?.inactive?.title}}&nbsp;{{count?.minDeviceName?count.minDeviceName:'-'}}</strong>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<h4 [ngStyle]="{ 'font-size':widget.widgetProperty?.contents?.count?.fontSize+'px', 'font-family':widget.widgetProperty?.contents?.count?.fontFamily, 'color':widget.widgetProperty?.contents?.count?.fontColor}"> {{count.total}}</h4>
+	<p class="small-widget-heading" [ngStyle]="{ 'font-size':widget.widgetProperty?.contents?.entities?.fontSize+'px', 'font-family':widget.widgetProperty?.contents?.entities?.fontFamily, 'color':widget.widgetProperty?.contents?.entities?.fontColor}"> {{widget?.widgetProperty?.contents?.entities?.title}}</p>
+</div>

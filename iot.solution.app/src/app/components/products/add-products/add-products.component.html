@@ -1,0 +1,95 @@
+<!-- Content Header (Page header) -->
+
+<section class="content-header">
+  <h1>{{moduleName}}</h1>
+</section>
+<!-- Main content -->
+
+<section class="content">
+  <mat-card class="support-card">
+    <div class="row">
+      <div class="col col-ld-11">
+        <form [formGroup]="productForm" (ngSubmit)="manageProduct()" autocomplete="off" class="form-horizontal common-form">
+          <div class="row">
+            <div class="col-md-6">
+              <fieldset class="form-group form-field">
+                <label class="form-label">Product Type<b>*</b></label>
+                <mat-form-field>
+                  <mat-select formControlName="productTypeGuid" placeholder="Select Product Type" [(ngModel)]="productObject['productTypeGuid']">
+                    <mat-option *ngFor="let productType of productTypes" [value]="productType.value">
+                      {{productType.text}}
+                    </mat-option>
+                  </mat-select>
+                  <div class="form-control-feedback" *ngIf="productForm.controls['productTypeGuid'].errors">
+                    <p class="form-tooltip-error sm " [ngClass]="{'error':true}"
+                       *ngIf="productForm.controls['productTypeGuid'].errors.required && checkSubmitStatus">
+                      Please select Product Type
+                    </p>
+                  </div>
+                </mat-form-field>
+              </fieldset>
+            </div>
+            <div class="col-md-6">
+              <fieldset class="form-group form-field">
+                <label class="form-label">Product Name<b>*</b></label>
+                <mat-form-field>
+                  <input matInput name="name" formControlName="name" type="text" maxlength="50" [(ngModel)]="productObject['name']"
+                         class="form-control" placeholder="Product Name">
+                  <div class="form-control-feedback" *ngIf="productForm.controls['name'].errors">
+                    <p class="form-tooltip-error sm " [ngClass]="{'error':true}"
+                       *ngIf="productForm.controls['name'].errors.required && checkSubmitStatus">
+                      Please enter Product Name
+                    </p>
+                  </div>
+                </mat-form-field>
+              </fieldset>
+            </div>
+            <div class="col-md-6">
+              <mat-label>Product Image</mat-label>
+              <fieldset class="form-group">
+                <label for="myFile" class="upload-file">
+                  <input formControlName="imageFile" #myFile id="myFile" (change)="handleImageInput($event)" class="upload-image" type="file" accept=".jpg, .jpeg, .png" />
+                  <div class="form-control-feedback" *ngIf="productForm.controls['imageFile'].errors">
+                    <p class="form-tooltip-error sm" [ngClass]="{'error':true}"
+                       *ngIf="productForm.controls['imageFile'].errors.required && checkSubmitStatus">
+                      Upload Image
+                    </p>
+                  </div>
+                </label>
+              </fieldset>
+              <fieldset class="form-group">
+                <ul class="image-list ">
+                  <li>
+                    <div class="user-profle-image">
+                      <img alt="" class="img-fluid"
+                           src="{{productObject['image'] == '00000000-0000-0000-0000-000000000000' || productObject['image'] == null || productObject['image'] == '' ? _appConstant.noImg:  productObject['image']}}" />
+                    </div>
+                    <span *ngIf="productObject['image']">
+                      <i class="material-icons" (click)="imageRemove()">clear</i>
+                    </span>
+                  </li>
+                </ul>
+              </fieldset>
+              <p>{{fileName}}</p>
+            </div>
+          </div>
+          <div class="row mt-4 mb-0">
+            <div class="col-lg-12">
+              <div class="form-field">
+                <div class="input-field ">
+                  <button mat-flat-button color="primary" class="text-white " title="{{buttonName}}" type="submit">
+                    {{buttonName}}
+                  </button>
+                  <button mat-flat-button color="primary" class="text-white m-l-10" routerLink="/products"
+                          title="Cancel">
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </mat-card>
+</section>

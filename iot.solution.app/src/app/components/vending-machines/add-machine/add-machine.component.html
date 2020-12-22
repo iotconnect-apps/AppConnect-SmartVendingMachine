@@ -1,0 +1,151 @@
+<!-- Content Header (Page header) -->
+
+<section class="content-header">
+  <h1>{{moduleName}}</h1>
+</section>
+<!-- Main content -->
+
+<section class="content">
+  <mat-card class="support-card">
+    <div class="row">
+      <div class="col col-ld-11">
+        <form class="form-horizontal common-form" [formGroup]="deviceForm" (ngSubmit)="addDevice()" autocomplete="off">
+          <div class="row">
+            <div class="col-md-4">
+              <fieldset class="form-group form-field">
+                <label class="form-label">Location<b>*</b></label>
+                <mat-form-field>
+                  <mat-select placeholder="Select Location" formControlName="entityGuid" [disabled]="isEdit ? 'disabled' : null"
+                              tabindex="1" [(ngModel)]="deviceObject['entityGuid']">
+                    <mat-option *ngFor="let location of locations" [value]="location.value | lowercase">
+                      {{location.text}}
+                    </mat-option>
+                  </mat-select>
+                  <div class="form-control-feedback" *ngIf="deviceForm.controls['entityGuid'].errors">
+                    <p class="form-tooltip-error sm " [ngClass]="{'error':true}"
+                       *ngIf="deviceForm.controls['entityGuid'].errors.required && checkSubmitStatus">
+                      Please select Location
+                    </p>
+                  </div>
+                </mat-form-field>
+              </fieldset>
+            </div>
+            <div class="col-md-4">
+              <fieldset class="form-group form-field">
+                <label class="form-label">Machine ID<b>*</b></label>
+                <mat-form-field>
+                  <input type="text" name="uniqueId" matInput placeholder="Machine ID" [disabled]="isEdit ? 'disabled' : null"
+                         formControlName="uniqueId" tabindex="2" [(ngModel)]="deviceObject['uniqueId']" maxlength="50">
+                  <div class="form-control-feedback" *ngIf="deviceForm.controls['uniqueId'].errors">
+                    <p class="form-tooltip-error sm " [ngClass]="{'error':true}"
+                       *ngIf="deviceForm.controls['uniqueId'].errors.required && checkSubmitStatus">
+                      Please enter Machine ID
+                    </p>
+                    <p class="form-tooltip-error sm " [ngClass]="{'error':true}"
+                       *ngIf="deviceForm.controls['uniqueId'].errors.pattern && checkSubmitStatus">
+                      Special characters and white space not allowed in Machine ID
+                    </p>
+                  </div>
+                </mat-form-field>
+              </fieldset>
+            </div>
+            <div class="col-md-4">
+              <fieldset class="form-group form-field">
+                <label class="form-label">Machine Name<b>*</b></label>
+                <mat-form-field>
+                  <input type="text" name="name" matInput placeholder="Machine Name" [disabled]="isEdit ? 'disabled' : null"
+                         formControlName="name" tabindex="3" [(ngModel)]="deviceObject['name']" maxlength="50">
+                  <div class="form-control-feedback" *ngIf="deviceForm.controls['name'].errors">
+                    <p class="form-tooltip-error sm " [ngClass]="{'error':true}"
+                       *ngIf="deviceForm.controls['name'].errors.required && checkSubmitStatus">
+                      Please enter Machine Name
+                    </p>
+                  </div>
+                </mat-form-field>
+              </fieldset>
+            </div>
+          </div>
+          <div class="row" [formGroup]="shelfForm">
+            <div class="col-md-4" formArrayName="pGuid">
+              <div *ngFor="let sid of pGuid.controls; index as idx">
+                <fieldset class="form-group form-field">
+                  <label class="form-label">Product Type<b>*</b></label>
+                  <mat-form-field>
+                    <mat-select placeholder="Select Product Type" [formControlName]="idx" [disabled]="isEdit ? 'disabled' : null"
+                                tabindex="4" [(ngModel)]="(!deviceObject['deviceItems'][idx])?'':deviceObject['deviceItems'][idx].productTypeGuid">
+                      <mat-option *ngFor="let productType of productTypes" [value]="productType.value | lowercase">
+                        {{productType.text}}
+                      </mat-option>
+                    </mat-select>
+                    <div class="form-control-feedback" *ngIf="shelfForm.get('pGuid').controls[idx].invalid">
+                      <p class="form-tooltip-error sm " [ngClass]="{'error':true}"
+                         *ngIf="shelfForm.get('pGuid').controls[idx].invalid && checkSubmitStatus">
+                        Please select Product Type
+                      </p>
+                    </div>
+                  </mat-form-field>
+                </fieldset>
+              </div>
+            </div>
+            <div class="col-md-4" formArrayName="shelfID">
+              <div *ngFor="let pg of shelfID.controls; index as idx">
+                <fieldset class="form-group form-field">
+                  <label class="form-label">Shelf ID<b>*</b></label>
+                  <mat-form-field>
+                    <input type="text" matInput placeholder="Shelf ID" [formControlName]="idx" [disabled]="isEdit ? 'disabled' : null"
+                           tabindex="5" [(ngModel)]="(!deviceObject['deviceItems'][idx])?'':deviceObject['deviceItems'][idx].uniqueId" maxlength="50">
+                    <div class="form-control-feedback" *ngIf="shelfForm.get('shelfID').controls[idx].invalid">
+                      <p class="form-tooltip-error sm " [ngClass]="{'error':true}"
+                         *ngIf="shelfForm.get('shelfID').controls[idx].invalid && checkSubmitStatus">
+                        Please enter Shelf ID
+                      </p>
+                    </div>
+                  </mat-form-field>
+                </fieldset>
+              </div>
+            </div>
+            <div class="col-md-4" formArrayName="capacity">
+              <div *ngFor="let cap of capacity.controls; index as idx">
+                <fieldset class="form-group form-field">
+                  <label class="form-label">Shelf Capacity<b>*</b></label>
+                  <mat-form-field>
+                    <input type="number" min="0" matInput placeholder="Shelf Capacity" [formControlName]="idx" [disabled]="isEdit ? 'disabled' : null"
+                           [(ngModel)]="(!deviceObject['deviceItems'][idx])?'':deviceObject['deviceItems'][idx].capacity"
+                           tabindex="6" step="1" oninput="validity.valid||(value='');" onKeyPress="if(this.value.length==9) return false;">
+                    <div class="form-control-feedback" *ngIf="shelfForm.get('capacity').controls[idx].invalid">
+                      <p class="form-tooltip-error sm " [ngClass]="{'error':true}"
+                         *ngIf="shelfForm.get('capacity').controls[idx].errors.required && checkSubmitStatus">
+                        Please enter Shelf Capacity
+                      </p>
+                      <p class="form-tooltip-error sm " [ngClass]="{'error':true}"
+                         *ngIf="shelfForm.get('capacity').controls[idx].errors.pattern && checkSubmitStatus">
+                        Only numbers allowed
+                      </p>
+                    </div>
+                  </mat-form-field>
+                </fieldset>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="row mt-4 mb-0">
+              <div class="col-lg-12">
+                <div class="form-field">
+                  <div class="input-field ">
+                    <button mat-flat-button color="primary" class="text-white " title="{{buttonName}}" type="submit" *ngIf="!isEdit">
+                      {{buttonName}}
+                    </button>
+                    <button mat-flat-button color="primary" class="text-white m-l-10" routerLink="/vending-machines"
+                            title="Cancel">
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </mat-card>
+</section>

@@ -1,0 +1,137 @@
+<!-- Content Header (Page header) -->
+
+<section class="content-header">
+  <h1>{{moduleName}}</h1>
+</section>
+<!-- Main content -->
+<section class="content">
+  <form [formGroup]="deviceForm" (ngSubmit)="manageHardwarekit()" autocomplete="off"
+        class="form-horizontal common-form">
+    <mat-card class="support-card">
+      <div class="row">
+        <div class="col col-ld-11">
+          <div class="row">
+            <div class="col-md-6">
+              <fieldset class="form-group form-field">
+                <label class="form-label">H/W Kit ID<b>*</b></label>
+                <mat-form-field>
+                  <input matInput name="kitCode" maxlength="50" formControlName="kitCode" type="text"
+                         [(ngModel)]="deviceObject['kitCode']"
+                         class="" tabindex="1" placeholder="H/W Kit ID">
+                  <div class="form-control-feedback" *ngIf="deviceForm.controls['kitCode'].errors">
+                    <p class="form-tooltip-error sm " [ngClass]="{'error':true}"
+                       *ngIf="deviceForm.controls['kitCode'].errors.required && checkSubmitStatus">
+                      Please enter H/W Kit ID
+                    </p>
+                    <p class="form-tooltip-error sm " [ngClass]="{'error':true}"
+                       *ngIf="deviceForm.controls['kitCode'].errors.pattern && checkSubmitStatus">
+                      Special characters not allowed in H/W Kit ID
+                    </p>
+                    <p class="form-tooltip-error sm " [ngClass]="{'error':true}"
+                       *ngIf="deviceForm.controls['kitCode'].hasError('whitespace')">
+                      Please enter valid data
+                    </p>
+                  </div>
+                </mat-form-field>
+              </fieldset>
+            </div>
+            <div class="col-md-6">
+              <fieldset class="form-group form-field">
+                <label class="form-label">Kit Type<b>*</b></label>
+                <mat-form-field>
+                  <mat-select placeholder="Select Kit Type" formControlName="kitTypeGuid"
+                              [(ngModel)]="deviceObject['kitTypeGuid']" tabindex="2">
+                    <mat-option *ngFor="let tem of templateList" [value]="tem?.value">
+                      {{tem.text}}
+                    </mat-option>
+                  </mat-select>
+                  <div class="form-control-feedback"
+                       *ngIf="deviceForm.controls['kitTypeGuid'].errors">
+                    <p class="form-tooltip-error sm" [ngClass]="{'error':true}"
+                       *ngIf="deviceForm.controls['kitTypeGuid'].errors.required && checkSubmitStatus">
+                      Please select Kit Type
+                    </p>
+                  </div>
+                </mat-form-field>
+              </fieldset>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <fieldset class="form-group form-field">
+                <label class="form-label">Unique ID<b>*</b></label>
+                <mat-form-field>
+                  <input matInput name="uniqueId" maxlength="50" formControlName="uniqueId" type="text"
+                         [(ngModel)]="deviceObject['uniqueId']" [attr.disabled]="isEdit ? '' : null"
+                         class="" tabindex="3" placeholder="Unique ID">
+                  <div class="form-control-feedback" *ngIf="deviceForm.controls['uniqueId'].errors">
+                    <p class="form-tooltip-error sm " [ngClass]="{'error':true}"
+                       *ngIf="deviceForm.controls['uniqueId'].errors.required && checkSubmitStatus">
+                      Please enter Unique ID
+                    </p>
+                    <p class="form-tooltip-error sm " [ngClass]="{'error':true}"
+                       *ngIf="deviceForm.controls['uniqueId'].errors.pattern && checkSubmitStatus">
+                      Special characters and white space not allowed in unique ID
+                    </p>
+                    <p class="form-tooltip-error sm " [ngClass]="{'error':true}"
+                       *ngIf="deviceForm.controls['uniqueId'].hasError('whitespace')">
+                      Please enter valid data
+                    </p>
+                  </div>
+                </mat-form-field>
+              </fieldset>
+            </div>
+            <div class="col-md-6">
+              <fieldset class="form-group form-field">
+                <label class="form-label">Name<b>*</b></label>
+                <mat-form-field>
+                  <input matInput name="name" maxlength="50" formControlName="name" type="text"
+                         [(ngModel)]="deviceObject['name']" [attr.disabled]="isEdit ? '' : null"
+                         class="" tabindex="4" placeholder="Name">
+                  <div class="form-control-feedback" *ngIf="deviceForm.controls['name'].errors">
+                    <p class="form-tooltip-error sm " [ngClass]="{'error':true}"
+                       *ngIf="deviceForm.controls['name'].errors.required && checkSubmitStatus">
+                      Please enter Name
+                    </p>
+                    <p class="form-tooltip-error sm " [ngClass]="{'error':true}"
+                       *ngIf="deviceForm.controls['name'].hasError('whitespace')">
+                      Please enter valid data
+                    </p>
+                  </div>
+                </mat-form-field>
+              </fieldset>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <fieldset class="form-group form-field">
+                <label class="form-label">Note</label>
+                <mat-form-field>
+                  <textarea rows="3" matInput class="form-control" formControlName="note" placeholder="Note" name="note"
+                            [(ngModel)]="deviceObject['note']" tabindex="6" maxlength="1000"></textarea>
+                </mat-form-field>
+              </fieldset>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-card>
+    <div class="row mt-4 mb-0">
+      <div class="col-lg-12">
+        <div class="form-field">
+          <div class="input-field ">
+            <button mat-flat-button color="primary" class="text-white " title="Submit"
+                    type="submit">
+              Submit
+            </button>
+            <button mat-flat-button color="primary" class="text-white m-l-10"
+                    [routerLink]="['/admin/hardwarekits']" title="Cancel">
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</section>

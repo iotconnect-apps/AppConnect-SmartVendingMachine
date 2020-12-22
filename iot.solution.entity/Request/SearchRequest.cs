@@ -1,0 +1,29 @@
+﻿namespace iot.solution.entity
+{
+    public class BaseRequest
+    {
+        public string Guid { get; set; }
+        public string CompanyId { get; set; }
+        public System.Guid EntityId { get; set; }
+        public System.Guid ProductId { get; set; }
+        public System.Guid ProductTypeGuid { get; set; }
+        public string Version { get; set; } = "v1";
+        
+    }
+    public class SearchRequest : BaseRequest
+    {
+        public System.Guid InvokingUser { get; set; }
+        public int PageNumber { get; set; }
+        public int PageSize { get; set; }
+        public string OrderBy { get; set; }
+        public string SearchText { get; set; }
+        public System.DateTime? CurrentDate { get; set; }
+        public string TimeZone { get; set; }
+    }
+
+    public class SearchResult<T>
+    {
+        public T Items { get; set; }
+        public int Count { get; set; }
+    }
+}

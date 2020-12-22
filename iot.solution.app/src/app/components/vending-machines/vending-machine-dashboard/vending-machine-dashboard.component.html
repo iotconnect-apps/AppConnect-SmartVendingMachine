@@ -1,0 +1,297 @@
+<section class="content-header">
+  <div class="detail-header-left">
+    <a  (click)="location.back();" class="back-title-link" href="javascript:;">
+      <i class="fa fa-angle-left"></i>
+    </a>
+    <span class="building-detail-address">
+      <span class="status-indicator m-r-5"
+                  [ngClass]="(deviceIsConnected) ? 'status-green' : 'status-red' "></span>
+                  {{objdetailref.name ? objdetailref.name : '' }}
+    </span>
+  </div>
+
+</section>
+<div class="content">
+
+  <div class="row">
+
+    <div class="col-lg-8">
+
+
+      <div class="row dashboardtop-widget">
+        <div class="col-xl-4 col-lg-4 m-b-20"
+             *ngFor="let smallWidget of smallWidgetData; let i = index;">
+          <div class="dashboard-chart text-center refrigerator-couter-card" [ngClass]="{ 'bggreenlwidget' : i == 0, 'bgbluewidget' : i == 1, 'bgwarningwidget' : i == 2,
+'bgpinkwidget' : i == 3 }">
+            <h4 *ngIf="smallWidget.smallWidgetTitle == 'Temperature' ">
+              {{ WidgetData.temp? WidgetData.temp : 0 }} <sup>o</sup>F
+              <p class="small-widget-heading">TEMPERATURE</p>
+            </h4>
+            <h4 *ngIf="smallWidget.smallWidgetTitle == 'Humidity' ">
+              {{ WidgetData.humidity ? WidgetData.humidity : 0 }}%
+              <p class="small-widget-heading">HUMIDITY</p>
+            </h4>
+            <h4 *ngIf="smallWidget.smallWidgetTitle == 'Vibration' ">
+              {{ WidgetData.vibration ? WidgetData.vibration : 0 }} db
+              <p class="small-widget-heading">VIBRATION</p>
+            </h4>
+          </div>
+        </div>
+      </div>
+
+      <div class="drag-body dashboard-widget inventory-widget-dashboard m-b-30">
+        <div class="panel-heading">
+          <h5 class="panel-title"> Inventory </h5>
+          <div class="m-r-20">
+            <mat-radio-group aria-label="Select an option" (change)="changeGraphInventory($event)"class="d-flex align-items-center">
+              <!-- <mat-radio-button checked value="Day">Day</mat-radio-button> -->
+              <mat-radio-button [checked]="typeinven == 'w'?'true':'false'" value="Week">Week</mat-radio-button>
+              <mat-radio-button [checked]="typeinven == 'm'?'true':'false'" value="Month">Month</mat-radio-button>
+            </mat-radio-group>
+          </div>
+        </div>
+        <mat-card class="dashboard-card">
+
+          <mat-tab-group animationDuration="0ms" (selectedTabChange)="inventorychange($event)">
+            <mat-tab label="Inventory">
+              <div class="chart-data">
+                <google-chart *ngIf="columnChartinvent.dataTable.length" [data]="columnChartinvent"></google-chart>
+                <div *ngIf="!columnChartinvent.dataTable.length"
+                class="text-center d-flex align-items-center justify-content-center" style="height: 300px;">
+             No data found
+           </div>
+              </div>
+            </mat-tab>
+            <mat-tab label="Product Wise Inventory">
+              <div class="chart-data">
+                <div class="filter-form-field">
+                  <ul class="filter-list-form">
+                    <li>
+                      <label class="form-label">Product</label>
+                      <div class="support-field">
+                        <div class="field-input">
+                          <mat-form-field class="">
+                            <mat-select (selectionChange)="SetProduct($event.value)" [(ngModel)]="productId"placeholder="Select Product">
+                               <mat-option *ngFor="let prodata of productList" [value]="prodata.value">
+                                {{prodata.text}}
+                              </mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+                <google-chart [data]="columnChartinvent"></google-chart>
+              </div>
+            </mat-tab>
+          </mat-tab-group>
+        </mat-card>
+      </div>
+
+    </div>
+
+    <div class="col-lg-4">
+      <div class="drag-body dashboard-widget m-b-30">
+        <div class="panel-heading">
+          <h5 class="panel-title w-100">Inventory (Today)</h5>
+        </div>
+        <mat-card class="dashboard-card mat-card pt-0">
+          <div *ngIf="topproduct.length==0" class="centerclass dashboard-alert-no-record-card">No records found</div>
+          <ng-scrollbar class="my-scrollbar" trackX="false" trackY="true"
+          autohide="false" [compact]="false"
+          *ngIf="topproduct.length">
+            <ul class="machine-products-list">
+              <li *ngFor="let product of topproduct">
+                <div class="machine-product d-flex flex-wrap align-items-center p-r-15">
+                  <img alt="" width="45" class="m-r-15"
+                  src="{{product['productImage'] == '00000000-0000-0000-0000-000000000000' || product['productImage'] == null || product['productImage'] == '' ? _appConstant.noImg: mediaUrl + product['productImage']}}">
+                  <div class="machine-product-content">
+                  <!-- <div class="row"> -->
+                    <p class="m-0">{{product.productName}}</p>
+                    <!-- <p class="m-0 col-lg-6"><span class="left" style="color:#0066FF;">{{product.totalAvailableQty}}</span>&nbsp;<sub class="right">Qty</sub> </p> -->
+                  <!-- </div> -->
+                    
+
+                    <div class="data-point-progress">
+                      <!-- <progress-bar  [progress]="product.totalAvailableQty" [color]="product.color == 'Red'?'#FF0000':'#41c363'"
+  [disable-percentage]="true"></progress-bar> -->
+                          <!-- <div>{{product.totalAvailableQty}} Qty</div> -->
+                      <div class="progress">
+                        <div class="progress-bar " role="progressbar" aria-valuemin="0" aria-valuemax="100"
+                             [ngStyle]="{ 'width' : getPercent(product.totalRemainingQty,product.totalCapacity)  + '%', 'background' : product.color }">
+                          {{ getPercent(product.totalRemainingQty,product.totalCapacity) }}%
+                          <!-- product?.totalPercentage?product.totalPercentage:0 -->
+                        </div>
+                      </div>
+                      <div class="data-point-progress-title">
+                        <span>{{product.totalRemainingQty}}/{{product.totalCapacity}} items remaining </span>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </ng-scrollbar>
+          <!-- <div *ngIf="alerts.length==0" class="centerclass dashboard-alert-no-record-card">No records found</div> -->
+        </mat-card>
+        <div style="background: #eaeff6;" class="panel-heading">
+          <p class="panel-title w-100"> <span>{{message}} items remaining</span>
+          </p>
+        </div>
+      </div>
+      <div class="drag-body dashboard-widget m-b-30 h-auto">
+        <div class="panel-heading">
+          <h5 class="panel-title w-100">Maintenance Scheduled</h5>
+        </div>
+        <mat-card class="dashboard-card mat-card py-0">
+          <div class="scheduled-maintenance-box" *ngIf="deviceuniqueId">
+            <h4 class="alerts-info"><strong>{{deviceuniqueId}} After {{maintenanceSchescheduled}}</strong></h4>
+            <span class="alerts-date">Scheduled on: {{maintenanceDate?getLocalDate(maintenanceDate): ''}}</span>
+          </div>
+          <div *ngIf="!deviceuniqueId" class="centerclass maintenance-record-empty">No records found</div>
+        </mat-card>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="row">
+
+    <div class="col-lg-8">
+      <div class="drag-body dashboard-widget m-b-30">
+
+        <div class="panel-heading">
+          <h5 class="panel-title"> Energy Consumption </h5>
+          <div class="m-r-20">
+            <mat-radio-group (change)="changeGraphFilter($event)" aria-label="Select an option" class="d-flex align-items-center">
+              <!-- <mat-radio-button checked value="Day">Day</mat-radio-button> -->
+              <mat-radio-button [checked]="type == 'w'?'true':'false'" value="Week">Week</mat-radio-button>
+              <mat-radio-button [checked]="type == 'm'?'true':'false'" value="Month">Month</mat-radio-button>
+            </mat-radio-group>
+          </div>
+        </div>
+        <mat-card class="dashboard-card">
+          <div class="chart-data">
+            <google-chart *ngIf="columnChart.dataTable.length" [data]="columnChart"></google-chart>
+            <div *ngIf="!columnChart.dataTable.length"
+            class="text-center d-flex align-items-center justify-content-center" style="height: 300px;">
+         No data found
+       </div>
+          </div>
+        </mat-card>
+
+      </div>
+      <div class="drag-body dashboard-widget m-b-30">
+
+        <div class="panel-heading">
+          <h5 class="panel-title w-auto"> Energy Consumption </h5>
+          <div class="d-flex align-items-center m-r-20">
+            <a class="m-r-10 d-flex align-items-center"
+            data-toggle="modal" href="#myModal">
+              <img src="../../../assets/images/telemetry-icon.svg"><strong class="m-l-5">Telemetry Data</strong>
+            </a>
+            <mat-radio-group (change)="changeGraphAttribute($event)" aria-label="Select an option" class="d-flex align-items-center">
+              <!-- <mat-radio-button checked value="Day">Day</mat-radio-button> -->
+              <mat-radio-button [checked]="typedata == 'w'?'true':'false'" value="Week">Week</mat-radio-button>
+              <mat-radio-button [checked]="typedata == 'm'?'true':'false'" value="Month">Month</mat-radio-button>
+            </mat-radio-group>
+          </div>
+        </div>
+        <mat-card class="dashboard-card">
+          <div class="chart-data">
+            <mat-tab-group animationDuration="0ms" (selectedTabChange)="onTabChange($event)">
+              <mat-tab label="{{sens.text | uppercase}}" *ngFor="let sens of sensdata">
+                <div class="chart-data">
+                  <google-chart *ngIf="columnChartattribute.dataTable.length" [data]="columnChartattribute"></google-chart>
+                  <div *ngIf="!columnChartattribute.dataTable.length"
+                  class="text-center d-flex align-items-center justify-content-center" style="height: 300px;">
+               No data found
+             </div>
+                </div>
+              </mat-tab>
+            </mat-tab-group>
+          </div>
+        </mat-card>
+
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <div class="drag-body dashboard-widget">
+        <div class="panel-heading">
+          <h5 class="panel-title w-100"> Alerts </h5>
+          <div style="margin-right: 20px;" class="tab-link-bar" *ngIf="alerts?.length>0">
+            <a class="text-nowrap" [routerLink]="['/alerts/vending-machines/',vendingGuid]" href="javascript:;">View All</a>
+          </div>
+        </div>
+        <mat-card class="dashboard-card mat-card pt-0">
+          <ng-scrollbar class="my-scrollbar" trackX="false" trackY="true"
+          autohide="false" [compact]="false"
+          *ngIf="alerts.length">
+            <ul style="height:925px;" class="alerts-dashboard alerts-dashboard-legend"
+                *ngIf="alerts.length">
+              <li *ngFor="let alert of alerts" [ngClass]="alert['severity']">
+                <span class="alerts-date">{{getLocalDate(alert['eventDate'])}}</span>
+                <span class="alerts-info">{{alert['message']}}</span>
+                <span class="alerts-location">{{alert['buildingName']}}</span>
+              </li>
+            </ul>
+          </ng-scrollbar>
+          <div *ngIf="!alerts.length" class="centerclass" style="height:192px;margin-bottom:40px;">No records found</div>
+          <!-- <div *ngIf="alerts.length==0" class="centerclass dashboard-alert-no-record-card" style="height:865px;">No records found</div> -->
+          <div class="alert-indicator-wrapper">
+            <div class="alert-indicator-list">
+              <div class="alert-indicator Critical">
+                <span class="legend"></span>
+                <span class="alert-text">Critical</span>
+              </div>
+              <div class="alert-indicator Information">
+                <span class="legend"></span>
+                <span class="alert-text">Information</span>
+              </div>
+              <div class="alert-indicator Major">
+                <span class="legend"></span>
+                <span class="alert-text">Major</span>
+              </div>
+              <div class="alert-indicator Minor">
+                <span class="legend"></span>
+                <span class="alert-text">Minor</span>
+              </div>
+              <div class="alert-indicator Warning">
+                <span class="legend"></span>
+                <span class="alert-text">Warning</span>
+              </div>
+            </div>
+          </div>
+        </mat-card>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<div class="modal" id="myModal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content drag-body ">
+
+      <div class="panel-heading">
+        <h4 class="panel-title">Telemetry Data</h4>
+        <button type="button" [disableRipple]="true" matSuffix mat-button class="close mr-3"
+                data-dismiss="modal">
+          &times;
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="modal-body-data">
+          <div>
+            <canvas baseChart [chartType]="'line'" [datasets]="datasets" [options]="optionsdata">
+            </canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

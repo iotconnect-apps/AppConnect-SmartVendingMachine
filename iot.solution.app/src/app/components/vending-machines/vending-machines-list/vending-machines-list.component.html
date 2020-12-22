@@ -1,0 +1,106 @@
+<section class="content-header">
+  <h1>Vending Machines</h1>
+  <div class="content-header-action">
+    <app-search-render [searchValue]="searchParameters.searchText" (searchEvent)="searchTextCallback($event)">
+    </app-search-render>
+    <div class="p-l-10">
+      <button type="button" mat-flat-button color="primary" class="width-auto text-white" routerLink="/vending-machines/add">
+        Add Vending Machine
+      </button>
+    </div>
+    <div class="p-l-10">
+      <button [ngClass]="isFilterShow ? 'grid-icon-active' : 'grid-icon' " type="button" mat-flat-button color="primary"
+              class="width-auto text-white" (click)="showHideFilter()">
+        <img src="../../../../assets/images/filter-icon-white.svg" alt="">
+      </button>
+    </div>
+  </div>
+</section>
+
+<div class="content">
+  <mat-card class="example-card filter-card" *ngIf="isFilterShow">
+    <mat-card-header class="filter-card-head">
+      <a href="javascript:void()" (click)="showHideFilter()">
+        <img src="../../../../assets/images/close-icon.svg" alt="">
+      </a>
+    </mat-card-header>
+    <mat-card-content>
+      <form>
+        <div class="filter-wrap">
+          <div class="filter-label">
+            <label for=""><img src="../../../assets/images/filter-icon.svg" alt=""><span>Filter</span></label>
+          </div>
+          <div class="filter-form-field">
+            <ul class="filter-list-form">
+              <li>
+                <label class="form-label">Location</label>
+                <div class="support-field">
+                  <div class="field-input">
+                    <mat-form-field class="">
+                      <mat-select placeholder="Select Location" [(ngModel)]="selectedLocation" [ngModelOptions]="{standalone: true}">
+                        <mat-option *ngFor="let location of locations" [value]="location.value">
+                          {{location.text}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </li>              
+              <li>
+                <div class="filter-form-action">
+                  <button type="button" mat-flat-button color="primary" (click)="filterBy(selectedLocation);">Apply</button>
+                  <button type="button" mat-flat-button color="primary" class="text-white m-l-10" (click)="clearFilter()">Clear</button>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<div class="content">
+  <div class="sticky-table-wrapper table-container">
+    <table mat-table [dataSource]="deviceList" matSort matSortDirection="asc" (matSortChange)="setOrder($event)"
+           class="mat-table sticky-cell-class" matSortDisableClear>
+      <ng-container matColumnDef="uniqueId">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Machine ID </th>
+        <td mat-cell *matCellDef="let element"> {{element.uniqueId}} </td>
+      </ng-container>
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Machine Name </th>
+        <td mat-cell *matCellDef="let element">
+          <a href="javascript:;" [routerLink]="['/vending-machines/dashboard',element.guid]">{{element.name}}</a>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="entityName">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Location </th>
+        <td mat-cell *matCellDef="let element"> {{element.entityName}} </td>
+      </ng-container>
+      <ng-container matColumnDef="isProvisioned">
+        <th mat-header-cell *matHeaderCellDef [hidden]="fieldshow == false"> Status </th>
+        <td mat-cell *matCellDef="let element" [hidden]="fieldshow == false" [ngClass]="element?.isProvisioned ? 'active' :'inactive' ">
+          {{element?.isProvisioned ? _appConstant.Status : _appConstant.inStatus }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef class="w110">Actions</th>
+        <td mat-cell *matCellDef="let element">
+          <div class="table-icons">
+            <a class="green" [routerLink]="['/vending-machines',element.guid]" title="View">
+              <img alt="View" src="./assets/images/view-icon.svg">
+            </a>
+          </div>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns;"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+     <div *ngIf="deviceList.length === 0 || totalRecords === 0 " class="centerclass">No records found</div> 
+  </div>
+</div>
+ <mat-paginator #paginator [length]="totalRecords" [pageIndex]="searchParameters.pageNumber"
+                     [pageSize]="searchParameters.pageSize" [pageSizeOptions]="pageSizeOptions"
+                     (page)="ChangePaginationAsPageChange($event)" [showFirstLastButtons]="true">
+      </mat-paginator> 

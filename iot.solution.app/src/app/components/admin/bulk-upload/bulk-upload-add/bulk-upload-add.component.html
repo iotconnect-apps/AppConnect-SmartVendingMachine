@@ -1,0 +1,132 @@
+<!-- Content Header (Page header) -->
+
+<section class="content-header">
+  <h1>{{moduleName}}</h1>
+  <div class="content-header-action">
+    <div class="p-l-20">
+      <button type="button" mat-flat-button color="primary" class="text-white"
+              title="Hardware Kit" [routerLink]="['/admin/hardwarekits']">
+        Hardware Kit
+      </button>
+    </div>
+
+  </div>
+</section>
+<!-- Main content -->
+
+<section class="content">
+  <mat-card class="support-card">
+    <div class="row">
+      <div class="col col-ld-11">
+        <form [formGroup]="bulkForm" (ngSubmit)="uploadbulk()" autocomplete="off">
+          <div class="row" *ngIf="formshow==false">
+
+            <div class="col-lg-12 col-xl-6">
+              <fieldset class="form-group form-field">
+                <label class="form-label">Kit Type<b>*</b></label>
+                <mat-form-field color="primary">
+                  <mat-select placeholder="Select Template" formControlName="kitTypeGuid" tabindex="3">
+                    <mat-option *ngFor="let tem of templateList" [value]="tem?.value">
+                      {{tem.text}}
+                    </mat-option>
+                  </mat-select>
+                  <div class="form-control-feedback" *ngIf="bulkForm.controls['kitTypeGuid'].errors">
+                    <p class="form-tooltip-error sm" [ngClass]="{'error':true}"
+                       *ngIf="bulkForm.controls['kitTypeGuid'].errors.required && checkSubmitStatus">
+                      Please select Kit Type
+                    </p>
+                  </div>
+                </mat-form-field>
+              </fieldset>
+            </div>
+            <div class="col-lg-12 col-xl-6">
+              <fieldset class="form-group form-field">
+                <label class="form-label">File Upload<b>*</b></label>
+                <div class="upload-image-field p-r-0">
+                  <div class="form-control form-control-wrapper  form-control-icon-right">
+                    <input #fileupload formControlName="kit_list" (change)="handleImageInput($event)"
+                           class="upload-image w-100" type="file" accept=".json" id="csvFile" #kit_list_Ref />
+                    <div class="form-control-feedback"
+                         *ngIf="bulkForm.controls['kit_list'].errors">
+                      <p class="form-tooltip-error sm" [ngClass]="{'error':true}"
+                         *ngIf="bulkForm.controls['kit_list'].errors.required && checkSubmitStatus">
+                        Please select any file
+                      </p>
+                    </div>
+                  </div>
+                  <span class="upload-firmware-icon"></span>
+                </div>
+              </fieldset>
+              <a class="green underline" href="javascript:void();" title="Download" (click)="download()">
+                Download sample file
+              </a>
+            </div>
+            <div class="col-lg-12 mt-4 mb-0">
+              <div class="form-field">
+                <div class="input-field ">
+                  <button mat-flat-button color="primary" class="text-white " title="Submit" 
+                          type="submit">
+                    Verify
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="" [hidden]="tblshow==false">
+      <div class="table-container">
+        <table mat-table [dataSource]="dataSource" matSort class="mat-table mat-table">
+          <!-- Name Column -->
+          <ng-container matColumnDef="kitCode">
+            <th mat-header-cell *matHeaderCellDef> H/W KIT ID </th>
+            <td mat-cell *matCellDef="let element"> {{element.kitCode}} </td>
+          </ng-container>
+          <!-- Name Column -->
+          <ng-container matColumnDef="uniqueId">
+            <th mat-header-cell *matHeaderCellDef> Unique Id </th>
+            <td mat-cell *matCellDef="let element"> {{element.uniqueId}} </td>
+          </ng-container>
+
+          <!-- Name Column -->
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef> Name </th>
+            <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+          </ng-container>
+
+          <!-- Name Column -->
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef class="w110">Message</th>
+            <td mat-cell *matCellDef="let element">
+              <div class="table-icons" *ngIf="element.hardwareKitError">
+                <a class="green" matTooltip="{{element.hardwareKitError}}">
+                  <img alt="Edit" src="../../../../assets/images/alert-icon-red.svg">
+                </a>
+              </div>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </div>
+      <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+      <div class="row mt-4 mb-1">
+        <div class="col-lg-12">
+          <div class="form-field">
+            <div class="input-field ">
+              <button mat-flat-button color="primary" class="text-white " title="Submit"
+                      (click)="Upload()">
+                Upload
+              </button>
+              <button mat-flat-button color="primary" class="text-white " title="Submit"
+                      (click)="Cancel()">
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </mat-card>
+</section>

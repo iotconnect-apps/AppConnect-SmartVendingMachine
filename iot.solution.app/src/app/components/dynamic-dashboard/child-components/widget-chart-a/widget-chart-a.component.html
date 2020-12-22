@@ -1,0 +1,15 @@
+<div class="drag-body dashboard-widget">
+	<div class="panel-heading" [ngStyle]="{'background':widget?.widgetProperty?.background}">
+		<h5 class="panel-title"
+		[ngStyle]="{'font-size':widget?.widgetProperty?.fontSize+'px',
+		'font-family':widget?.widgetProperty?.fontFamily,
+		'color':widget?.widgetProperty?.fontColor}">{{widget?.widgetProperty?.title}} </h5>
+	</div>
+	<mat-card class="dashboard-card mat-card">
+		<google-chart *ngIf="columnChart.dataTable.length > 1" #cchart [data]="columnChart"></google-chart>
+		<div *ngIf="columnChart.dataTable.length < 2" class="text-center d-flex align-items-center justify-content-center" >
+			No data found
+		</div>
+	</mat-card>
+</div>
+

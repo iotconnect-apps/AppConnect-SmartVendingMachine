@@ -1,0 +1,255 @@
+<section class="content-header">
+  <div class="detail-header-left">
+    <a  (click)="location.back();" class="back-title-link" href="javascript:;">
+      <i class="fa fa-angle-left"></i>
+    </a>
+    <span class="building-detail-address">
+      <i class="fas fa-map-pin"></i>
+      {{locationObj?.name}}
+    </span>
+  </div>
+  <div class="filter-form-field">
+    <ul class="filter-list-form">
+      <li>
+        <label class="form-label">Location</label>
+        <div class="support-field">
+          <div class="field-input">
+            <mat-form-field class="">
+              <mat-select (selectionChange)="SetLocation($event.value)" placeholder="Select Location" [(ngModel)]="locationObj['guid']" [ngModelOptions]="{standalone: true}" placeholder="Select Location">
+                 <mat-option *ngFor="let location of locationList" [value]="location.value">
+                  {{location.text}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</section>
+<div class="content">
+
+  <div class="row">
+
+    <div class="col-lg-8">
+
+
+      <div class="main-page dashboard">
+        <div class="row dashboardtop-widget">
+          <div class="col-xl-4 col-lg-6">
+            <div class="dashboard-chart bgorangewidget text-center">
+              <h4>{{statisticObj.totalEnergyCount| shortNumber}} <sub>kWh</sub></h4>
+              <p class="small-widget-heading">Energy Consumption (Today)</p>
+            </div>
+          </div>
+          <div class="col-xl-4 col-lg-6">
+            <div class="dashboard-chart bggreenlwidget text-center">
+              <div class="widget-readings-box">
+                <div class="widget-reading-left">
+                  <h4>{{statisticObj.totalConnected?statisticObj.totalConnected:'0'}}</h4>
+                  <p>Connected</p>
+                </div>
+                <div class="widget-reading-right">
+                  <h4>{{statisticObj.totalDisConnected?statisticObj.totalDisConnected:'0'}}</h4>
+                  <p>Disconnected</p>
+                </div>
+              </div>
+              <p class="small-widget-heading">Vending Machines</p>
+            </div>
+          </div>
+          <div class="col-xl-4 col-lg-6">
+            <div class="dashboard-chart bgpinkwidget text-center">
+              <div class="widget-readings-box">
+                <!-- <div class="widget-reading-left">
+                  <p>Total</p>
+                  <h4>{{overview.totalEnergyCount}}KW</h4>
+                </div> -->
+                <div class="widget-reading-right">
+                  <ul class="reading-item-list">
+                    <li class="reading-item">
+                      <span class="elevator-status-indicator status-danger"></span>
+                      <span class="m-l-10">{{statisticObj.maxDeviceCount | shortNumber}} times <strong class="m-l-15">{{statisticObj.maxDeviceName?statisticObj.maxDeviceName:'-'}}</strong></span>
+                    </li>
+                    <li class="reading-item">
+                      <span class="elevator-status-indicator status-success"></span>
+                      <span class="m-l-10">{{statisticObj.minDeviceCount | shortNumber}} times <strong class="m-l-15">{{statisticObj.minDeviceName?statisticObj.minDeviceName:'-'}}</strong></span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <p class="small-widget-heading">Vending Machine Usage (Today)</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="drag-body dashboard-widget m-b-30">
+        <div class="panel-heading">
+          <h5 class="panel-title"> Inventory </h5>
+          <div class="m-r-20">
+            <mat-radio-group aria-label="Select an option" (change)="changeGraphInventory($event)"class="d-flex align-items-center">
+              <!-- <mat-radio-button checked value="Day">Day</mat-radio-button> -->
+              <mat-radio-button [checked]="typeinven == 'w'?'true':'false'" value="Week">Week</mat-radio-button>
+              <mat-radio-button [checked]="typeinven == 'm'?'true':'false'" value="Month">Month</mat-radio-button>
+            </mat-radio-group>
+          </div>
+        </div>
+        <mat-card class="dashboard-card">
+          <div class="chart-data">
+            <div class="text-center">
+                <strong>Consumed</strong>
+                <mat-slide-toggle checked="false" (change)="onChangepredication($event)" class="m-l-10">Prediction</mat-slide-toggle>
+              </div>
+              <div class="chart-data">
+                <google-chart *ngIf="columnChartinvent.dataTable.length" [data]="columnChartinvent"></google-chart>
+                <div *ngIf="!columnChartinvent.dataTable.length"
+                class="text-center d-flex align-items-center justify-content-center" style="height:400px;">
+             No data found
+           </div>
+              </div>
+          </div>
+        </mat-card>
+      </div>
+
+    </div>
+
+    <div class="col-lg-4">
+      <div class="drag-body dashboard-widget m-b-30">
+        <div class="panel-heading">
+          <h5 class="panel-title w-100">Inventory (Today)</h5>
+        </div>
+        <mat-card class="dashboard-card mat-card pt-0">
+          <div *ngIf="topproduct.length==0" class="centerclass dashboard-alert-no-record-card">No records found</div>
+          <ng-scrollbar class="my-scrollbar" trackX="false"
+          trackY="true" autohide="false" [compact]="false">
+            <ul class="machine-products-list">
+              <li *ngFor="let product of topproduct">
+                <div class="machine-product d-flex flex-wrap align-items-center p-r-15">
+                  <img alt="" width="45" class="m-r-15"
+                  src="{{product['productImage'] == '00000000-0000-0000-0000-000000000000' || product['productImage'] == null || product['productImage'] == '' ? _appConstant.noImg: mediaUrl + product['productImage']}}">
+                  <div class="machine-product-content">
+                    <p class="m-0">{{product.productName}}</p>
+
+                    <div class="data-point-progress">
+                      <!--<progress-bar  [progress]="product.totalAvailableQty" [color]="product.color == 'Red'?'#FF0000':'#41c363'"
+  [disable-percentage]="true"></progress-bar>-->
+                      <div class="progress">
+                        <div class="progress-bar " role="progressbar" aria-valuemin="0" aria-valuemax="100"
+                             [ngStyle]="{ 'width' : getPercent(product.totalRemainingQty,product.totalCapacity) + '%', 'background' : product.color }">
+                          {{ getPercent(product.totalRemainingQty,product.totalCapacity) }}%
+                          <!-- product?.totalPercentage?product.totalPercentage:0 -->
+                        </div>
+                      </div>
+                      <div class="data-point-progress-title">
+                        <span>{{product.totalRemainingQty}}/{{product.totalCapacity}} items remaining</span>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </ng-scrollbar>
+        </mat-card>
+        <div style="background: #eaeff6;" class="panel-heading">
+          <p class="panel-title w-100"> <span>{{message}} items remaining</span>
+          </p>
+        </div>
+      </div>
+      <div class="drag-body dashboard-widget m-b-30 h-auto">
+        <div class="panel-heading">
+          <h5 class="panel-title w-100">Maintenance Scheduled</h5>
+        </div>
+        <mat-card class="dashboard-card mat-card py-0">
+          <div style="height: 70px;" class="scheduled-maintenance-box" *ngIf="uniqueId">
+            <h4 class="alerts-info"><strong>{{uniqueId}} After {{maintenanceSchescheduled}}</strong></h4>
+            <span class="alerts-date">Scheduled on: {{maintenanceDate?getLocalDate(maintenanceDate): ''}}</span>
+          </div>
+         <div style="height: 70px;" *ngIf="!uniqueId" class="centerclass alert-no-record-card maintenance-record-empty">No records found</div>
+        </mat-card>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="row">
+
+    <div class="col-lg-8">
+      <div class="drag-body dashboard-widget m-b-30">
+
+        <div class="panel-heading">
+          <h5 class="panel-title"> Energy Consumption </h5>
+          <div class="m-r-20">
+            <mat-radio-group aria-label="Select an option" (change)="changeGraphFilter($event)" class="d-flex align-items-center">
+              <!-- <mat-radio-button checked value="Day">Day</mat-radio-button> -->
+              <mat-radio-button [checked]="type == 'w'?'true':'false'" value="Week">Week</mat-radio-button>
+              <mat-radio-button [checked]="type == 'm'?'true':'false'" value="Month">Month</mat-radio-button>
+            </mat-radio-group>
+          </div>
+        </div>
+        <mat-card class="dashboard-card">
+          <div class="chart-data">
+            <google-chart *ngIf="columnChart.dataTable.length" [data]="columnChart"></google-chart>
+            <div *ngIf="!columnChart.dataTable.length"
+            class="text-center d-flex align-items-center justify-content-center" style="height: 300px;">
+         No data found
+       </div>
+          </div>
+        </mat-card>
+
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <div class="drag-body dashboard-widget">
+        <div class="panel-heading">
+          <h5 class="panel-title w-100"> Alerts </h5>
+          <div style="margin-right: 20px;" class="tab-link-bar" *ngIf="alerts?.length>0">
+            <a class="text-nowrap" [routerLink]="['/alerts/location/',locationGuid]"
+               href="javascript:;">View All</a>
+          </div>
+        </div>
+        <mat-card class="dashboard-card mat-card pt-0">
+          <div style="height: 365px;" *ngIf="alerts?.length==0" class="centerclass location-details-alerts-empty">
+            No records found
+          </div>
+          <ng-scrollbar style="height: 365px;" class="my-scrollbar" trackX="false"
+          trackY="true" autohide="false" [compact]="false" *ngIf="alerts?.length">
+            <ul class="alerts-dashboard dashboard-alert-card" style="height:315px;">
+              <li [ngClass]="alert['severity']" *ngFor="let alert of alerts">
+                <span class="alerts-date">{{getLocalDate(alert['eventDate'])}}</span>
+                <span class="alerts-info">{{alert['message']}}</span>
+              </li>
+            </ul>
+          </ng-scrollbar>
+          <div class="alert-indicator-wrapper">
+            <div class="alert-indicator-list">
+              <div class="alert-indicator Critical">
+                <span class="legend"></span>
+                <span class="alert-text">Critical</span>
+              </div>
+              <div class="alert-indicator Information">
+                <span class="legend"></span>
+                <span class="alert-text">Information</span>
+              </div>
+              <div class="alert-indicator Major">
+                <span class="legend"></span>
+                <span class="alert-text">Major</span>
+              </div>
+              <div class="alert-indicator Minor">
+                <span class="legend"></span>
+                <span class="alert-text">Minor</span>
+              </div>
+              <div class="alert-indicator Warning">
+                <span class="legend"></span>
+                <span class="alert-text">Warning</span>
+              </div>
+            </div>
+          </div>
+        </mat-card>
+      </div>
+    </div>
+
+  </div>
+
+</div>

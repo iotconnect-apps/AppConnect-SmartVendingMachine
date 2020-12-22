@@ -1,0 +1,41 @@
+<div class="drag-body dashboard-widget">
+	<div class="panel-heading" [ngStyle]="{'background':widget?.widgetProperty?.background}">
+		<h5 class="panel-title"
+		[ngStyle]="{'font-size':widget?.widgetProperty?.fontSize+'px',
+		'font-family':widget?.widgetProperty?.fontFamily,
+		'color':widget?.widgetProperty?.fontColor}">{{widget?.widgetProperty?.title}} </h5>
+	</div>
+	<ng-container *ngIf="widget.widgetProperty?.telemetryUniqueId != ''">
+		<div class="modal-body" *ngIf="deviceData.length > 0 && isDeviceExists">
+			<div class="modal-body-header">
+				<h2>{{deviceData[generatorsData.index].name}}</h2>
+			</div>
+			<div class="modal-body-data">
+				<div style="display: block;" [ngStyle]="{'width':options.width+'px','height':options.height+'px'}" *ngIf="datasets.length > 0">
+					<canvas baseChart [chartType]="chartType" [datasets]="datasets" [options]="options">
+					</canvas>
+				</div>
+				<div class="centerclass text-center" *ngIf="datasets.length <= 0">
+					<div class="w-100 alert alert-danger" role="alert" >
+						No attributes found.
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="centerclass text-center" *ngIf="deviceData.length > 0 && !isDeviceExists">
+			<div class="w-100 alert alert-danger" role="alert" >
+				Vending Updated.
+			</div>
+		</div>
+		<div class="centerclass text-center" *ngIf="deviceData.length==0">
+			<div class="w-100 alert alert-danger" role="alert" >
+				No Vending found.
+			</div>
+		</div>
+	</ng-container>
+	<div class="centerclass text-center" *ngIf="widget.widgetProperty?.telemetryUniqueId == ''">
+		<div class="w-100 alert alert-danger" role="alert" >
+			No Vending selected.
+		</div>
+	</div>
+</div>

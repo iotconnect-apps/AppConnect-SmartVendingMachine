@@ -1,0 +1,58 @@
+<section class="content-header">
+  <h1>Products</h1>
+  <div class="content-header-action">
+    <app-search-render [searchValue]="searchParameters.searchText" (searchEvent)="searchTextCallback($event)">
+    </app-search-render>
+    <div class="p-l-10">
+      <button type="button" mat-flat-button color="primary" class="width-auto text-white"
+              routerLink="/products/add">
+        Add Product
+      </button>
+    </div>
+  </div>
+</section>
+
+<div class="content">
+  <div class="sticky-table-wrapper table-container">
+    <table mat-table [dataSource]="productList" matSort matSortDirection="asc" (matSortChange)="setOrder($event)"
+           class="mat-table sticky-cell-class" matSortDisableClear>
+      <ng-container matColumnDef="image">
+        <th mat-header-cell *matHeaderCellDef> Product Image </th>
+        <td mat-cell *matCellDef="let element">
+          <img src="{{element['image'] == '00000000-0000-0000-0000-000000000000' || element['image'] == null || element['image'] == '' ? _appConstant.noImg: mediaUrl+  element['image']}}" alt="No image" width="38" />
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Product Name </th>
+        <td mat-cell *matCellDef="let element">
+          {{element.name}}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="productType">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Product Type </th>
+        <td mat-cell *matCellDef="let element"> {{element.productType}} </td>
+      </ng-container>
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef class="w100"> Actions </th>
+        <td mat-cell *matCellDef="let element; let i = index;">
+          <div class="table-icons">
+            <a class="actionicon" href="javascript:void(0);" [routerLink]="['/products/',element['guid']]" title="Edit">
+              <img src="../../../../assets/images/icon-edit.svg" alt="Edit">
+            </a>
+            <a href="javascript:;" data-toggle="modal" data-target="#deviceDeleteModal"
+               (click)="deleteModel(element)" title="Delete">
+              <img alt="View" src="../../../assets/images/icon-delete.svg">
+            </a>
+          </div>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns;"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+    <div *ngIf="productList.length === 0 || totalRecords === 0 " class="centerclass">No records found</div>
+  </div>
+</div>
+<mat-paginator #paginator [length]="totalRecords" [pageIndex]="searchParameters.pageNumber"
+               [pageSize]="searchParameters.pageSize" [pageSizeOptions]="pageSizeOptions"
+               (page)="ChangePaginationAsPageChange($event)" [showFirstLastButtons]="true">
+</mat-paginator>

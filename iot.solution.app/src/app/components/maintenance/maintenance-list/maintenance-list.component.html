@@ -1,0 +1,162 @@
+<section class="content-header">
+  <h1>Scheduled Maintenance</h1>
+  <div class="content-header-action">
+    <form class="">
+      <div class="search-part">
+        <mat-form-field class="w-auto form-inline my-lg-0">
+          <input class="search" matInput placeholder="Search" autocomplete="off">
+          <button type="button" matSuffix mat-button class="search-btn">
+            <img src="../../../assets/images/search-icon.svg" alt="">
+          </button>
+        </mat-form-field>
+      </div>
+    </form>    
+    <div class="p-l-10">
+      <button type="button" mat-flat-button color="primary" class="width-auto text-white" 
+      routerLink="/maintenance/add">
+        Schedule Maintenance
+      </button>
+    </div>
+    <div class="p-l-10">
+      <button 
+      [ngClass]="isFilterShow ? 'grid-icon-active' : 'grid-icon' " 
+      type="button" mat-flat-button color="primary"
+        class="width-auto text-white" (click)="showHideFilter()">
+        <img src="../../../../assets/images/filter-icon-white.svg" alt="">
+      </button>
+    </div>
+  </div>
+</section>
+
+<div class="content">
+  <mat-card class="example-card filter-card" *ngIf="isFilterShow">
+    <mat-card-header class="filter-card-head">
+      <a href="javascript:void()" (click)="showHideFilter()">
+        <img src="../../../../assets/images/close-icon.svg" alt="">
+      </a>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="filterForm" (ngSubmit)="filterCall()" autocomplete="off">
+        <div class="filter-wrap">
+          <div class="filter-label">
+            <label for=""><img src="../../../assets/images/filter-icon.svg" alt=""><span>Filter</span></label>
+          </div>
+          <div class="filter-form-field">
+            <ul class="filter-list-form">
+              <li>
+                <label class="form-label">Location</label>
+                <div class="support-field">
+                  <div class="field-input">
+                    <mat-form-field class="">
+                      <mat-select placeholder="Select Location" (selectionChange)="getMachineslookup($event.value);" formControlName="entityGuid">
+                        <mat-option *ngFor="let location of locationList" [value]="location.value">
+                          {{location.text}}
+                        </mat-option>
+                      </mat-select>
+                      <div class="form-control-feedback" *ngIf="filterForm.controls['entityGuid'].errors">
+                        <p class="form-tooltip-error sm" [ngClass]="{'error':true}"
+                           *ngIf="filterForm.controls['entityGuid'].errors.required && checkFilterSubmitStatus">
+                          Please select location
+                        </p>
+                      </div>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <label class="form-label">Machine</label>
+                <div class="support-field">
+                  <div class="field-input">
+                    <mat-form-field class="">
+                      <mat-select placeholder="Select Machine" formControlName="deviceId">
+                        <mat-option *ngFor="let machine of machines" [value]="machine.value">
+                          {{machine.text}}
+                        </mat-option>
+                      </mat-select>
+                      <div class="form-control-feedback" *ngIf="filterForm.controls['deviceId'].errors">
+                        <p class="form-tooltip-error sm" [ngClass]="{'error':true}"
+                           *ngIf="filterForm.controls['deviceId'].errors.required && checkFilterSubmitStatus">
+                          Please select machine
+                        </p>
+                      </div>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </li>              
+                          
+              <li>
+                <div class="filter-form-action">
+                  <button type="submit" mat-flat-button color="primary">Apply</button>
+                  <button type="button" mat-flat-button color="primary" (click)="clearFilter()" class="text-white m-l-10">Clear</button>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<div class="content">
+  <div class="sticky-table-wrapper table-container">
+    <table mat-table [dataSource]="maintenanceList" matSort matSortDirection="asc" matSortDisableClear
+      class="mat-table sticky-cell-class"  (matSortChange)="setOrder($event)">
+      <ng-container matColumnDef="startDateTime">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Start Date </th>
+        <td mat-cell *matCellDef="let element"> {{getLocalDate(element.startDateTime)}} </td>
+      </ng-container>
+      <ng-container matColumnDef="endDateTime">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> End Date </th>
+        <td mat-cell *matCellDef="let element"> {{getLocalDate(element.endDateTime)}} </td>
+      </ng-container>
+      <ng-container matColumnDef="deviceName">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Machine Name </th>
+        <td mat-cell *matCellDef="let element">
+          <a href="javascript:;"  [routerLink]="['/vending-machines/dashboard',element.deviceGuid]">{{element.deviceName}}</a>
+        </td>
+      </ng-container>      
+      <ng-container matColumnDef="entityName">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Location </th>
+        <td mat-cell *matCellDef="let element"> {{element.entityName}} </td>
+      </ng-container>
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
+        <td mat-cell *matCellDef="let element">
+          <a href="javascript:;">
+            {{element.status}}
+          </a>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef class="w100"> Actions </th>
+        <td mat-cell *matCellDef="let element; let i = index;">
+          <div class="table-icons" *ngIf="element.status=='Scheduled'">
+            <a class="actionicon" href="javascript:void(0);" [routerLink]="['/maintenance',element.guid]" title="Edit">
+              <img src="../../../../assets/images/icon-edit.svg" alt="Edit">
+            </a>
+            <a class="actionicon" href="javascript:void(0);" data-toggle="modal" data-target="#deviceDeleteModal"
+               (click)="deleteModel(element)" title="Delete">
+              <img src="../../../../assets/images/icon-delete.svg" alt="Delete">
+            </a>
+          </div>
+          <div class="table-icons" *ngIf="element.status!='Scheduled'">
+            <a class="actionicon disable-link" href="javascript:void(0);" title="Edit">
+              <img src="../../../../assets/images/icon-edit.svg" alt="Edit">
+            </a>
+            <a class="actionicon disable-link" title="Delete">
+              <img src="../../../../assets/images/icon-delete.svg" alt="Delete">
+            </a>
+          </div>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns;"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+    <div *ngIf="maintenanceList.length === 0 || totalRecords === 0 " class="centerclass">No records found</div>
+  </div>
+</div>
+ <mat-paginator #paginator [length]="totalRecords" [pageIndex]="searchParameters.pageNumber"
+                     [pageSize]="searchParameters.pageSize" [pageSizeOptions]="pageSizeOptions"
+                     (page)="ChangePaginationAsPageChange($event)" [showFirstLastButtons]="true">
+      </mat-paginator> 

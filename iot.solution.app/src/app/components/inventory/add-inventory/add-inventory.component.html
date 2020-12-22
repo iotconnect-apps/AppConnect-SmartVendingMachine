@@ -1,0 +1,221 @@
+<!-- Content Header (Page header) -->
+
+<section class="content-header">
+    <h1>{{moduleName}}</h1>
+  </section>
+  <!-- Main content -->
+  
+  <section class="content">
+    <mat-card class="support-card">
+      <div class="row">
+        <div class="col col-ld-11">
+          <form class="form-horizontal common-form" [formGroup]="inventoryForm" autocomplete="off">
+            <div class="row">
+              <div class="col-md-6">
+                <fieldset class="form-group form-field">
+                  <label class="form-label">Location<b>*</b></label>
+                  <mat-form-field>
+                    <mat-select placeholder="Select Location" (selectionChange)="getDeviceLookup($event.value)" formControlName="entityGuid"
+                                [(ngModel)]="inventoryObject['entityGuid']" [disabled]="isEdit ? 'disabled' : null">
+                      <mat-option *ngFor="let location of locations" [value]="location.value  | lowercase">
+                        {{location.text}}
+                      </mat-option>
+                    </mat-select>
+                    <div class="form-control-feedback" *ngIf="inventoryForm.controls['entityGuid'].errors">
+                      <p class="form-tooltip-error sm " [ngClass]="{'error':true}"
+                         *ngIf="inventoryForm.controls['entityGuid'].errors.required && checkSubmitStatus">
+                        Please select Location
+                      </p>
+                    </div>
+                  </mat-form-field>
+                </fieldset>
+              </div>
+              <div class="col-md-6">
+                <fieldset class="form-group form-field">
+                  <label class="form-label">Machine Name<b>*</b></label>
+                  <mat-form-field>
+                    <mat-select placeholder="Select Machine Name" formControlName="deviceGuid" [disabled]="isEdit ? 'disabled' : null"
+                                [(ngModel)]="inventoryObject['deviceGuid']"
+                                (selectionChange)="getProductTypeLookup($event.value);">
+                      <mat-option *ngFor="let machine of machineNames" [value]="machine.value  | lowercase">
+                        {{machine.text}}
+                      </mat-option>
+                    </mat-select>
+                    <div class="form-control-feedback" *ngIf="inventoryForm.controls['deviceGuid'].errors">
+                      <p class="form-tooltip-error sm " [ngClass]="{'error':true}"
+                         *ngIf="inventoryForm.controls['deviceGuid'].errors.required && checkSubmitStatus">
+                        Please select Machine Name
+                      </p>
+                    </div>
+                  </mat-form-field>
+                </fieldset>
+              </div>
+              <div class="col-md-6">
+                <fieldset class="form-group form-field">
+                  <label class="form-label">Refill Date & Time<b>*</b></label>
+                  <mat-form-field>
+                    <input matInput [owlDateTimeTrigger]="startDate" readonly
+                           [owlDateTime]="startDate" placeholder="Enter Refill Date & Time"
+                           formControlName="refillDateTime" [(ngModel)]="inventoryObject['refillDateTime']" [disabled]="isEdit ? 'disabled' : null">
+                    <a href="javascript:;" matSuffix class="material-icons" [owlDateTimeTrigger]="startDate">date_range</a>
+                    <owl-date-time #startDate showSecondsTimer="true" [disabled]="isEdit ? 'disabled' : null"></owl-date-time>
+                    <div class="form-control-feedback" *ngIf="inventoryForm.controls['refillDateTime'].errors">
+                      <p class="form-tooltip-error sm " [ngClass]="{'error':true}"
+                         *ngIf="inventoryForm.controls['refillDateTime'].errors.required && checkSubmitStatus">
+                        Please select Refill Date & Time
+                      </p>
+                    </div>
+                  </mat-form-field>
+                </fieldset>
+              </div>
+              <div class="col-md-6">
+                <fieldset class="form-group form-field">
+                  <label class="form-label">Product Type<b>*</b></label>
+                  <mat-form-field>
+                    <mat-select placeholder="Select Product Type" (selectionChange)="getProductLookup($event.value)" formControlName="productTypeGuid"
+                                [(ngModel)]="inventoryObject['productTypeGuid'] " [disabled]="isEdit ? 'disabled' : null">
+                      <mat-option *ngFor="let productType of productTypes" [value]="productType.value | lowercase">
+                        {{productType.text}}
+                      </mat-option>
+                    </mat-select>
+                    <div class="form-control-feedback" *ngIf="inventoryForm.controls['productTypeGuid'].errors">
+                      <p class="form-tooltip-error sm " [ngClass]="{'error':true}"
+                         *ngIf="inventoryForm.controls['productTypeGuid'].errors.required && checkSubmitStatus">
+                        Please select Product Type
+                      </p>
+                    </div>
+                  </mat-form-field>
+                </fieldset>
+              </div>
+              <div class="col-md-6">
+                <fieldset class="form-group form-field">
+                  <label class="form-label">Product<b>*</b></label>
+                  <mat-form-field>
+                    <mat-select placeholder="Select Product" formControlName="productGuid"
+                                [(ngModel)]="inventoryObject['productGuid']" [disabled]="isEdit ? 'disabled' : null">
+                      <mat-option *ngFor="let productName of productNames" [value]="productName.value | lowercase">
+                        {{productName.text}}
+                      </mat-option>
+                    </mat-select>
+                    <div class="form-control-feedback" *ngIf="inventoryForm.controls['productGuid'].errors">
+                      <p class="form-tooltip-error sm " [ngClass]="{'error':true}"
+                         *ngIf="inventoryForm.controls['productGuid'].errors.required && checkSubmitStatus">
+                        Please select Product
+                      </p>
+                    </div>
+                  </mat-form-field>
+                </fieldset>
+              </div>
+              <div class="col-md-6">
+                <fieldset class="form-group form-field">
+                  <label class="form-label">Shelf ID<b>*</b></label>
+                  <mat-form-field>
+                    <mat-select placeholder="Select Shelf ID" formControlName="deviceItemGuid" (selectionChange)="getShelfCapacity($event.value)" 
+                                [(ngModel)]="inventoryObject['deviceItemGuid']" [disabled]="isEdit ? 'disabled' : null">
+                      <mat-option *ngFor="let shelfId of shelfIds" [value]="shelfId.value | lowercase">
+                        {{shelfId.text}}
+                      </mat-option>
+                    </mat-select>
+                    <div class="form-control-feedback" *ngIf="inventoryForm.controls['deviceItemGuid'].errors">
+                      <p class="form-tooltip-error sm " [ngClass]="{'error':true}"
+                         *ngIf="inventoryForm.controls['deviceItemGuid'].errors.required && checkSubmitStatus">
+                        Please select Shelf ID
+                      </p>
+                    </div>
+                  </mat-form-field>
+                </fieldset>
+              </div>
+              <div class="col-md-6">
+                <fieldset class="form-group form-field" [disabled]="isEdit ? 'disabled' : null">
+                  <label class="form-label">Capacity<b>*</b></label>
+                  <mat-form-field>
+                    <input type="text" matInput placeholder="Capacity" formControlName="capacity" [(ngModel)]="inventoryObject['capacity']"/>
+                  </mat-form-field>
+                </fieldset>
+              </div>
+              <div class="col-md-6">
+                <fieldset class="form-group form-field" [disabled]="isEdit ? 'disabled' : null">
+                  <label class="form-label">{{quantityLabel}}<b>*</b></label>
+                  <mat-form-field>
+                    <input type="number" matInput placeholder="Enter Quantity" formControlName="quantity" [(ngModel)]="inventoryObject['quantity']"
+                           min="0" step="1" oninput="validity.valid||(value='');">
+                    <div class="form-control-feedback" *ngIf="inventoryForm.controls['quantity'].errors">
+                      <p class="form-tooltip-error sm " [ngClass]="{'error':true}"
+                         *ngIf="inventoryForm.controls['quantity'].errors.required && checkSubmitStatus">
+                        Please enter Quantity
+                      </p>
+                    </div>
+                    <div class="form-control-feedback"
+                         *ngIf="inventoryForm.errors?.invalid && !inventoryForm.controls['quantity'].errors && !isEdit">
+                      <p class="form-tooltip-error sm " [ngClass]="{'error':true}"
+                         *ngIf="inventoryForm.errors?.invalid">
+                        {{inventoryForm.errors?.message}}
+                      </p>
+                    </div>
+                  </mat-form-field>
+                </fieldset>
+              </div>
+              <div class="col-md-6" *ngIf="isEdit">
+                <fieldset class="form-group form-field">
+                  <label class="form-label">Update Qty<b>*</b></label>
+                  <mat-form-field>
+                    <mat-select placeholder="Select Action" formControlName="action">
+                      <mat-option *ngFor="let action of actionList" [value]="action.value | lowercase">
+                        {{action.text}}
+                      </mat-option>
+                    </mat-select>
+                    <div class="form-control-feedback" *ngIf="inventoryForm.controls['action'].errors">
+                      <p class="form-tooltip-error sm " [ngClass]="{'error':true}"
+                         *ngIf="inventoryForm.controls['action'].errors.required && checkSubmitStatus">
+                        Please select Action
+                      </p>
+                    </div>
+                  </mat-form-field>
+                </fieldset>
+              </div>
+              <div class="col-md-6" *ngIf="isEdit">
+                <fieldset class="form-group form-field">
+                  <label class="form-label">Quantity<b>*</b></label>
+                  <mat-form-field>
+                    <input type="number" matInput placeholder="Enter Quantity" formControlName="updatequantity"
+                           min="0" step="1" oninput="validity.valid||(value='');">
+                    <div class="form-control-feedback" *ngIf="inventoryForm.controls['updatequantity'].errors">
+                      <p class="form-tooltip-error sm " [ngClass]="{'error':true}"
+                         *ngIf="inventoryForm.controls['updatequantity'].errors.required && checkSubmitStatus">
+                        Please enter Quantity
+                      </p>
+                    </div>
+                    <div class="form-control-feedback"
+                         *ngIf="inventoryForm.errors?.invalid && !inventoryForm.controls['updatequantity'].errors">
+                      <p class="form-tooltip-error sm " [ngClass]="{'error':true}"
+                         *ngIf="inventoryForm.errors?.invalid">
+                        {{inventoryForm.errors?.message}}
+                      </p>
+                    </div>
+                  </mat-form-field>
+                </fieldset>
+              </div>
+            </div>
+            <div class="row mt-4 mb-0">
+              <div class="col-lg-12">
+                <div class="form-field">
+                  <div class="input-field ">
+                    <button mat-flat-button color="primary" class="text-white " title="{{buttonName}}" type="submit" (click)="manageInventory(false)">
+                      {{buttonName}}
+                    </button>
+                    <button mat-flat-button color="primary" class="text-white m-l-10" title="Clear Shelf & Add" type="submit" (click)="manageInventory(true)" *ngIf="!isEdit">
+                      Clear Shelf & Add
+                    </button>
+                    <button mat-flat-button color="primary" class="text-white m-l-10" routerLink="/inventory"
+                            title="Cancel">
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </mat-card>
+  </section>

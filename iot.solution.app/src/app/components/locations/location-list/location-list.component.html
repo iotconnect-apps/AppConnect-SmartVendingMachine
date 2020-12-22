@@ -1,0 +1,148 @@
+<section class="content-header">
+  <h1>Location Listing</h1>
+  <div class="content-header-action align-items-center">
+    <ul class="legend-list mb-0 m-r-10">
+      <li><span class="status-available"></span>Connected</li>
+      <li><span class="status-unavailable"></span>Disconnected</li>
+      <!-- <li><span class="status-pending"></span>Warning </li> -->
+    </ul>
+    <div>
+      <app-search-render [searchValue]="searchParameters.searchText" (searchEvent)="searchTextCallback($event)">
+      </app-search-render>
+    </div>
+    <!--<form class="">
+      <div class="search-part">
+        <mat-form-field class="w-auto form-inline my-lg-0">
+          <input class="search" matInput placeholder="Search" autocomplete="off">
+          <button type="button" matSuffix mat-button class="search-btn">
+            <img src="../../../assets/images/search-icon.svg" alt="">
+          </button>
+        </mat-form-field>
+      </div>
+    </form>-->
+    <div class="p-l-10">
+      <button mat-flat-button color="primary" [routerLink]="['/locations/add']">Add Location</button>
+    </div>
+  </div>
+</section>
+<div class="content">
+  <div class="user-grid-wrapper custom-height-grid-box">
+    <div class="row">
+      <div class="col-lg-4 col-ld-3" *ngFor="let location of locationList;let k = index;">
+
+
+        <div class="user-grid-box">
+          <div class="grid-inner-flex d-flex align-items-center flex-wrap machine-location-box">
+            <div class="user-image-box">
+              <img alt="" class="img-fluid"
+                   src="{{location['image'] == '00000000-0000-0000-0000-000000000000' || location['image'] == null || location['image'] == '' ? _appConstant.noImg: mediaUrl + location['image']}}">
+            </div>
+            <div class="user-detail-box m-b-10">
+              <h3 class="user-name">
+                <a href="javascript:;"
+                [routerLink]="['/locations/detail',location.guid]">
+                  {{location.name}}
+                </a>
+              </h3>
+              <p class="user-details user-address-details m-b-10">
+                {{location.address}}
+              </p>
+            </div>
+            <ng-container *ngFor="let machine of location.entityDevices;let i = index;">
+              <div class="user-details d-flex flex-wrap align-items-center justify-content-around w-100 m-b-5">
+                <div *ngIf="(i < 2) || isCollapsed && viewMoreValues == k">
+                  <span class="plan-list-status-dot {{machine.isConnected == false? 'unavailable': 'available'}}"></span>
+                  <!-- <span class="plan-list-status-dot unavailable"></span> -->
+                  <a href="javascript:;"
+                    [routerLink]="['/vending-machines/dashboard', machine.guid]"><span>{{machine.name}}</span>
+                  </a>
+                </div>
+                <div class="ml-auto" *ngIf="(i < 2) || isCollapsed && viewMoreValues == k">
+                  <h4 class="m-0 {{machine.color == 'Green'? 'green': 'red'}}">{{machine.availableQty | shortNumber}}/{{machine.capacity | shortNumber}} (Qty.)</h4>
+                </div>
+              </div>
+            </ng-container>
+            <div class="w-100"
+            *ngIf="location.entityDevices != null && location.entityDevices.length > 2">
+              <a href="javascript:;" (click)="viewMoreClick(k)"
+              *ngIf="!isCollapsed">View +{{location.entityDevices.length-2}} Machines</a>
+              <a href="javascript:;" (click)="viewMoreClick(k)"
+              *ngIf="isCollapsed">View Less Machines</a>
+            </div>
+          </div>
+          <div class="user-actions d-flex flex-wrap">
+            <div class="user-actions-cta text-center">
+              <a class="green" href="javascript:;" [routerLink]="['/locations',location.guid]" title="Edit">
+                <img src="../../../assets/images/edit_icon.svg">
+              </a>
+            </div>
+            <div class="user-actions-cta text-center">
+              <a href="javascript:;" (click)="deleteModel(location)" data-toggle="modal" data-target="#deviceDeleteModal"
+                 title="Delete">
+                <img alt="View" src="../../../assets/images/delete_icon.svg">
+              </a>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- <div class="water-topwidget m-b-30">
+          <div class="water-topwidget-header">
+            <a href="javascript:;" class="topwidget-title-link"
+            routerLink="/locations/details">
+              <span matTooltip="Pheonix Market" matTooltipPosition="before">{{location.name}}</span>
+              <i class="fa fa-angle-right"></i>
+            </a>
+            <div class="topwidget-title-address">
+              <div class="topwidget-title-address-left">
+                <i class="fas fa-map-pin"></i>
+                <span
+                matTooltip="47 Division St. Buffalo, NY 14241"
+                matTooltipPosition="before">
+                {{location.address}}
+              </span>
+              </div>
+            </div>
+          </div>
+          <div class="water-topwidget-body">
+            <div class="d-flex flex-wrap align-items-center m-b-10">
+              <div class="">
+                <span class="status-indicator status-green m-r-10"></span>
+                <a href="javascript:;">PHO_1</a>
+              </div>
+              <div class="ml-auto">
+                <h4 class="m-0 green">195/250 (Qty.)</h4>
+              </div>
+            </div>
+            <div class="d-flex flex-wrap align-items-center m-b-10">
+              <div class="">
+                <span class="status-indicator status-red m-r-10"></span>
+                <a href="javascript:;">PHO_2</a>
+              </div>
+              <div class="ml-auto">
+                <h4 class="m-0 red">195/250 (Qty.)</h4>
+              </div>
+            </div>
+            <a href="javascript:;">View +2 machines</a>
+          </div>
+          <div class="water-topwidget-action-footer">
+            <div class="action-footer-links">
+              <a class="green" href="javascript:;" [routerLink]="['/location',location.guid]" title="Edit">
+                <img src="../../../assets/images/edit_icon.svg">
+              </a>
+            </div>
+            <div class="action-footer-links">
+              <a href="javascript:;" data-toggle="modal" data-target="#deviceDeleteModal"
+                 title="Delete">
+                <img alt="View" src="../../../assets/images/delete_icon.svg">
+              </a>
+            </div>
+          </div>
+        </div> -->
+
+      </div>
+      <div *ngIf="!locationList?.length && searchParameters['searchText'] === ''" class="text-center m-auto d-flex align-items-center" style="height: 100px">No location exists.</div>
+      <div *ngIf="!locationList?.length  && searchParameters['searchText'] !== ''" class="text-center m-auto d-flex align-items-center" style="height: 100px">No location found.</div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,113 @@
+<section class="content-header">
+  <h1>Schedule Maintenance</h1>
+</section>
+
+<div class="content">
+  <mat-card>
+    <form [formGroup]="maintenanceForm" (ngSubmit)="scheduleMaintenance()" autocomplete="off" class="form-horizontal common-form">
+      <div class="m-b-30">
+        <div class="content-box">
+          <div class="row">
+            <div class="col-md-12 col-ld-11">
+              <div class="row">
+                
+                <div class="col-md-6">
+                  <fieldset class="form-group form-field">
+                    <label class="form-label">Start Date<b>*</b></label>
+                    <mat-form-field>
+                      <!-- [disabled]="(maintenanceObject['status']=='Scheduled' || maintenanceObject['status']=='Under maintenance') && isEdit?'disabled':''"  -->
+                      <input matInput [readonly]="true"  [min]="today"  
+                      [(ngModel)]="maintenanceObject['startDateTime']" 
+                      (ngModelChange)="onChangeStartDate(maintenanceObject['startDateTime'])"
+                      formControlName="startDateTime" [owlDateTime]="strtdt">
+                      <!-- <mat-datepicker-toggle matSuffix [for]="strtdt" ></mat-datepicker-toggle> -->
+                      <!-- <owl-date-time #strtdt ></owl-date-time> -->
+                      <a href="javascript:;" matSuffix class="material-icons" [owlDateTimeTrigger]="strtdt">date_range</a>
+                      <owl-date-time #strtdt></owl-date-time>
+                      <div class="form-control-feedback" *ngIf="maintenanceForm.controls['startDateTime'].errors">
+                        <p class="form-tooltip-error sm"  [ngClass]="{'error':true}"
+                          *ngIf="maintenanceForm.controls['startDateTime'].errors.required && checkSubmitStatus">
+                          Please select Start Date
+                        </p>
+                      </div>
+                    </mat-form-field>
+                  </fieldset>
+                </div>
+                <div class="col-md-6">
+                  <fieldset class="form-group form-field">
+                    <label class="form-label">End Date<b>*</b></label>
+                    <mat-form-field>
+                      <input matInput [owlDateTimeTrigger]="enddt"  
+                      [min]="endDateValidate"
+                      [(ngModel)]="maintenanceObject['endDateTime']" readonly="true" 
+                      formControlName="endDateTime" [owlDateTime]="enddt">
+                      <!-- <mat-datepicker-toggle matSuffix [for]="enddt" ></mat-datepicker-toggle> -->
+                      <a href="javascript:;" matSuffix class="material-icons" [owlDateTimeTrigger]="enddt">date_range</a>
+                      <owl-date-time  #enddt></owl-date-time>
+                      <div class="form-control-feedback" *ngIf="maintenanceForm.controls['endDateTime'].errors">
+                        <p class="form-tooltip-error sm"  [ngClass]="{'error':true}"
+                          *ngIf="maintenanceForm.controls['endDateTime'].errors.required && checkSubmitStatus">
+                          Please select End Date
+                        </p>
+                      </div>
+                    </mat-form-field>
+                  </fieldset>
+                </div>
+                <div class="col-md-6">
+                  <label>
+                    Location
+                    <span class="required">*</span>
+                  </label>
+                  <mat-form-field>
+                    <mat-select placeholder="Select Location" name="location" formControlName="entityGuid" [(ngModel)]="maintenanceObject['entityGuid']" (selectionChange)="getMachineslookup($event.value)">
+                      <mat-option *ngFor="let location of locationList" [value]="location.value">
+                        {{location.text}}
+                      </mat-option>
+                    </mat-select>
+                    <div class="form-control-feedback" *ngIf="maintenanceForm.controls['entityGuid'].errors">
+                      <p class="form-tooltip-error sm" [ngClass]="{'error':true}"
+                         *ngIf="maintenanceForm.controls['entityGuid'].errors.required && checkSubmitStatus">
+                        Please select Location
+                      </p>
+                    </div>
+                  </mat-form-field>
+                </div>
+                <div class="col-md-6">
+                  <label>
+                    Machine Name
+                    <span class="required">*</span>
+                  </label>
+                  <mat-form-field>
+                    <mat-select placeholder="Select Machine" name="dateP" [(ngModel)]="maintenanceObject['deviceGuid']" formControlName="deviceGuid">
+                      <mat-option *ngFor="let machine of machines" [value]="machine.value">
+                        {{machine.text}}
+                      </mat-option>
+                    </mat-select>
+                    <div class="form-control-feedback" *ngIf="maintenanceForm.controls['deviceGuid'].errors">
+                      <p class="form-tooltip-error sm" [ngClass]="{'error':true}"
+                         *ngIf="maintenanceForm.controls['deviceGuid'].errors.required && checkSubmitStatus">
+                        Please select Machine
+                      </p>
+                    </div>
+                  </mat-form-field>
+                </div>
+                <div class="col-md-6">
+                  <label>
+                    Description
+                  </label>
+                  <mat-form-field>
+                    <textarea matInput formControlName="description" maxlength="250" [(ngModel)]="maintenanceObject['description']" placeholder="Enter Description" rows="4"></textarea>
+                  </mat-form-field>
+                </div>                
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="button-row m-t-15">
+          <button mat-flat-button color="primary" type="submit" mat-button title="Submit">Submit</button>
+          <button mat-flat-button color="primary"  [routerLink]="['/maintenance']" type="button" mat-button title="Cancel">Cancel</button>
+        </div>
+      </div>
+    </form>
+  </mat-card>
+</div>

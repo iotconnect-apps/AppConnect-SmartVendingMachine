@@ -1,0 +1,248 @@
+<section class="content-header">
+  <h1>Inventory</h1>
+  <div class="content-header-action">
+    <app-search-render [searchValue]="searchParameters.searchText" (searchEvent)="searchTextCallback($event)">
+    </app-search-render>
+    <div class="p-l-10">
+      <button type="button" mat-flat-button color="primary" class="width-auto text-white"
+              routerLink="/inventory/add">
+        Add Inventory
+      </button>
+    </div>
+    <div class="p-l-10">
+      <button [ngClass]="isFilterShow ? 'grid-icon-active' : 'grid-icon' " type="button" mat-flat-button color="primary"
+              class="width-auto text-white" (click)="showHideFilter();">
+        <img src="../../../../assets/images/filter-icon-white.svg" alt="">
+      </button>
+    </div>
+  </div>
+</section>
+
+<div class="content">
+  <mat-card class="example-card filter-card" *ngIf="isFilterShow">
+    <mat-card-header class="filter-card-head">
+      <a href="javascript:void()" (click)="showHideFilter();">
+        <img src="../../../../assets/images/close-icon.svg" alt="">
+      </a>
+    </mat-card-header>
+    <mat-card-content>
+      <form>
+        <div class="filter-wrap">
+          <div class="filter-label">
+            <label for=""><img src="../../../assets/images/filter-icon.svg" alt=""><span>Filter</span></label>
+          </div>
+          <div class="filter-form-field">
+            <ul class="filter-list-form">
+              <li>
+                <label class="form-label">Location</label>
+                <div class="support-field">
+                  <div class="field-input">
+                    <mat-form-field class="">
+                      <mat-select placeholder="Select Location" (selectionChange)="getDeviceLookup($event.value)"
+                                  [(ngModel)]="selectedLocation" [ngModelOptions]="{standalone: true}">
+                        <mat-option *ngFor="let location of locations" [value]="location.value">
+                          {{location.text}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <label class="form-label">Machine</label>
+                <div class="support-field">
+                  <div class="field-input">
+                    <mat-form-field class="">
+                      <mat-select placeholder="Select Machine" (selectionChange)="getProductTypeLookup($event.value);"
+                                  [(ngModel)]="selectedMachine" [ngModelOptions]="{standalone: true}">
+                        <mat-option *ngFor="let machine of machines" [value]="machine.value">
+                          {{machine.text}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <label class="form-label">Product Type</label>
+                <div class="support-field">
+                  <div class="field-input">
+                    <mat-form-field class="">
+                      <mat-select placeholder="Select Product" (selectionChange)="getProductLookup($event.value)"
+                                  [(ngModel)]="selectedProductType" [ngModelOptions]="{standalone: true}">
+                        <mat-option *ngFor="let product of productTypes" [value]="product.value">
+                          {{product.text}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <label class="form-label">Product</label>
+                <div class="support-field">
+                  <div class="field-input">
+                    <mat-form-field class="">
+                      <mat-select placeholder="Select Product" [(ngModel)]="selectedProduct" [ngModelOptions]="{standalone: true}">
+                        <mat-option *ngFor="let product of products" [value]="product.value">
+                          {{product.text}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <div class="filter-form-action">
+                  <button type="button" mat-flat-button color="primary" (click)="filterBy(selectedLocation,selectedMachine,selectedProductType,selectedProduct);">Apply</button>
+                  <button type="button" mat-flat-button color="primary" class="text-white m-l-10" (click)="clearFilter()">Clear</button>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<div class="content">
+  <div class="sticky-table-wrapper table-container">
+    <table mat-table [dataSource]="inventoryList" matSort matSortDirection="asc" matSortDisableClear
+           (matSortChange)="setOrder($event)" matSortActive="entityName" class="mat-table sticky-cell-class">
+      <ng-container matColumnDef="entityName">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Location </th>
+        <td mat-cell *matCellDef="let element"> {{element.entityName}} </td>
+      </ng-container>
+      <ng-container matColumnDef="deviceName">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Machine Name </th>
+        <td mat-cell *matCellDef="let element">
+          <a href="javascript:;" [routerLink]="['/vending-machines/dashboard/',element.deviceGuid]">{{element.deviceName}}</a>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="shelfId">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Shelf # </th>
+        <td mat-cell *matCellDef="let element"> {{element.shelfId}} </td>
+      </ng-container>
+      <ng-container matColumnDef="productType">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Product Type </th>
+        <td mat-cell *matCellDef="let element"> {{element.productType}} </td>
+      </ng-container>
+      <ng-container matColumnDef="productName">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Product </th>
+        <td mat-cell *matCellDef="let element"> {{element.productName}} </td>
+      </ng-container>
+      <ng-container matColumnDef="availableQty">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Available Qty </th>
+        <td mat-cell *matCellDef="let element"> {{element.availableQty}} </td>
+      </ng-container>
+      <ng-container matColumnDef="refillDateTime">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Last Refill Date & Time </th>
+        <td mat-cell *matCellDef="let element"> {{element.refillDateTime == null?'' :getLocalDate(element.refillDateTime)}} </td>
+      </ng-container>
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef class="w230"> Actions </th>
+        <td mat-cell *matCellDef="let element; let i = index;">
+          <div class="table-icons">
+            <a class="actionicon" data-toggle="modal" href="#myModal" title="History" (click)="getInventoryHistoryList(element['deviceItemGuid'])">
+              <img src="../../../../assets/images/history-icon.svg" alt="History">
+            </a>
+            <a class="actionicon" href="javascript:void(0);" title="Clear Shelf" (click)="clearShelfModel(element);">
+              <img src="../../../../assets/images/clear-icon.svg" alt="Clear Shelf">
+            </a>
+            <a class="actionicon" href="javascript:void(0);" [routerLink]="['/inventory/',element['guid']]" title="Edit">
+              <img src="../../../../assets/images/icon-edit.svg" alt="Edit">
+            </a>
+          </div>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns;"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+    <div *ngIf="inventoryList.length === 0 || totalRecords === 0 " class="centerclass">No records found</div>
+  </div>
+</div>
+<mat-paginator #paginator [length]="totalRecords" [pageIndex]="searchParameters.pageNo"
+               [pageSize]="searchParameters.pageSize" [pageSizeOptions]="pageSizeOptions"
+               (page)="ChangePaginationAsPageChange($event)" [showFirstLastButtons]="true">
+</mat-paginator>
+
+
+<div class="modal" id="myModal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content drag-body ">
+
+      <div class="panel-heading">
+        <h4 class="panel-title">History</h4>
+        <button type="button" [disableRipple]="true" matSuffix mat-button class="close mr-3"
+                data-dismiss="modal">
+          &times;
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="modal-body-data">
+
+          <div class="light-card m-b-15">
+            <div class="light-card-body">
+              <ul class="m-0">
+                <li>
+                  <span class="plan-decription">Location: </span>
+                  <span class="plan-details"> {{history.entityName}} </span>
+                </li>
+                <li>
+                  <span class="plan-decription">Machine ID: </span>
+                  <span class="plan-details">{{history.uniqueId}}</span>
+                </li>
+                <li>
+                  <span class="plan-decription">Machine Name: </span>
+                  <span class="plan-details">{{history.deviceName}}</span>
+                </li>
+                <li>
+                  <span class="plan-decription">Shelf ID: </span>
+                  <span class="plan-details">{{history.shelfId}}</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="sticky-table-wrapper table-container">
+            <div class="modal-table-scroll">
+              <table mat-table [dataSource]="historyList" matSort matSortDirection="asc" matSortDisableClear
+                     class="mat-table sticky-cell-class">
+                <ng-container matColumnDef="productType">
+                  <th mat-header-cell *matHeaderCellDef> Product Type </th>
+                  <td mat-cell *matCellDef="let element"> {{element.productType}} </td>
+                </ng-container>
+                <ng-container matColumnDef="productName">
+                  <th mat-header-cell *matHeaderCellDef>Product </th>
+                  <td mat-cell *matCellDef="let element">
+                    {{element.productName}}
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="operation">
+                  <th mat-header-cell *matHeaderCellDef> Operation </th>
+                  <td mat-cell *matCellDef="let element"> {{element.operation}} </td>
+                </ng-container>
+                <ng-container matColumnDef="refillQuantity">
+                  <th mat-header-cell *matHeaderCellDef> Refill Qty </th>
+                  <td mat-cell *matCellDef="let element"> {{element.refillQuantity}} </td>
+                </ng-container>
+                <ng-container matColumnDef="refillDate">
+                  <th mat-header-cell *matHeaderCellDef> Refill Date & Time </th>
+                  <td mat-cell *matCellDef="let element">
+                    {{element.refillDate == null ||element.refillDate == '' ? '' :getLocalDate(element.refillDate)}}
+                  </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="modalTableColumns;sticky:true"></tr>
+                <tr mat-row *matRowDef="let row; columns: modalTableColumns;"></tr>
+              </table>
+            </div>
+             <div *ngIf="!historyList" class="centerclass">No records found</div> 
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

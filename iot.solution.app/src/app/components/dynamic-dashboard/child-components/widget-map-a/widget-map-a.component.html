@@ -1,0 +1,23 @@
+<div class="drag-body dashboard-widget">
+	<div class="panel-heading" [ngStyle]="{'background':widget?.widgetProperty?.background}">
+		<h5 class="panel-title"
+		[ngStyle]="{'font-size':widget?.widgetProperty?.fontSize+'px',
+		'font-family':widget?.widgetProperty?.fontFamily,
+		'color':widget?.widgetProperty?.fontColor}">{{widget?.widgetProperty?.title}} </h5>
+	</div>
+	<mat-card class="dashboard-card mat-card p-0" style="padding:0px !important;">
+		<div id="map-view">
+			<agm-map [latitude]="lat" [longitude]="lng" [ngStyle]="{'height':mapHeight}" [zoom]="widget?.widgetProperty?.zoom" >
+				<agm-marker *ngFor="let location of locationList" [latitude]="location.latitude ? location.latitude : lat" [longitude]="location.longitude ? location.longitude : lng" [iconUrl]="{ url: '../../../../../assets/images/icon-location.svg'}">
+					<agm-info-window [isOpen]="true" #infoWindow>
+						<strong>{{location.name}}</strong><br>
+						<strong>{{location.address}}</strong><br>
+						<strong>Machines:{{location.totalDevices}}</strong><br>
+						<strong>Alerts:{{location.totalAlerts}}</strong>
+					</agm-info-window>
+				</agm-marker>
+			</agm-map>
+		</div>
+	</mat-card>
+</div>
+

@@ -1,0 +1,14 @@
+<div class="dashboard-chart text-center">
+	<div *ngIf="widget.widgetProperty?.contents?.icon?.isRequired">
+		<i [ngStyle]="{'color':widget.widgetProperty?.contents?.icon?.fontColor}"
+		class="{{widget?.widgetProperty?.contents?.icon?.iconClass}} fa-{{widget?.widgetProperty?.contents?.icon?.fontSize}}x"></i>
+	</div>
+	<h4 [ngStyle]="{
+	'font-size':widget.widgetProperty?.contents?.count?.fontSize+'px',
+	'font-family':widget.widgetProperty?.contents?.count?.fontFamily,
+	'color':widget.widgetProperty?.contents?.count?.fontColor}">{{count}}</h4>
+	<p class="small-widget-heading" [ngStyle]="{
+	'font-size':widget.widgetProperty?.contents?.entities?.fontSize+'px',
+	'font-family':widget.widgetProperty?.contents?.entities?.fontFamily,
+	'color':widget.widgetProperty?.contents?.entities?.fontColor}">{{widget?.widgetProperty?.contents?.entities?.title}}</p>
+</div>

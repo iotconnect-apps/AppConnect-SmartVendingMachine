@@ -1,0 +1,37 @@
+<div class="drag-body dashboard-widget">
+	<div class="panel-heading" [ngStyle]="{'background':widget?.widgetProperty?.background}">
+		<h5 class="panel-title"
+		[ngStyle]="{'font-size':widget?.widgetProperty?.fontSize+'px',
+		'font-family':widget?.widgetProperty?.fontFamily,
+		'color':widget?.widgetProperty?.fontColor}"> {{widget?.widgetProperty?.title}} </h5>
+	</div>
+	<mat-card class="dashboard-card mat-card pt-0">
+		<div *ngIf="topproduct.length==0" class="alerts-dashboard d-flex align-items-center justify-content-center" [ngStyle]="{'height':(widget?.properties?.h - 145)+'px'}" >No records found</div>
+		<ng-scrollbar class="my-scrollbar" trackX="false" trackY="true" autohide="false" [compact]="false" *ngIf="topproduct.length" [ngStyle]="{'height':(widget?.properties?.h - 145)+'px'}">
+			<ul class="machine-products-list">
+				<li *ngFor="let product of topproduct">
+					<div class="machine-product d-flex flex-wrap align-items-center p-r-15">
+						<img alt="" width="45" class="m-r-15" src="{{product['productImage'] == '00000000-0000-0000-0000-000000000000' || product['productImage'] == null || product['productImage'] == '' ? _appConstant.noImg: mediaUrl + product['productImage']}}">
+						<div class="machine-product-content">
+							<p class="m-0">{{product.productName}}</p>
+
+							<div class="data-point-progress">
+								<div class="progress">
+									<div class="progress-bar " role="progressbar" aria-valuemin="0" aria-valuemax="100" [ngStyle]="{ 'width' : getPercent(product.totalAvailableQty,product.totalCapacity) + '%', 'background' : product.color }">
+									</div>
+								</div>
+								<div class="data-point-progress-title">
+									<span>{{product.totalAvailableQty}}/{{product.totalCapacity}} items remaining</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</li>
+			</ul>
+		</ng-scrollbar>
+		<div style="background: #eaeff6;" class="panel-heading">
+			<p class="panel-title w-100"> <span>{{message}} items remaining</span>
+			</p>
+		</div>
+	</mat-card>
+</div>

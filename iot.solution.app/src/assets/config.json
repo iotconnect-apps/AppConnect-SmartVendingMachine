@@ -1,0 +1,16 @@
+{
+    "env": {
+        "name": "uat"
+    },
+  "apiServer": {
+    "baseUrl": "[Your API baseUrl]"
+  },
+  "IdsServer": {
+    "IDSAuthority": "https://login.iotconnect.io",
+    "IDSClientID": "iotconnect.avnet",
+    "IDSScope": "openid profile iotconnect.api.fullaccess",
+    "IDSArcValue": "solutionCode:[your solution code]",
+    "webUrl": "[Your Web Url]"
+  }
+}
+
