@@ -197,9 +197,9 @@ export class AddLocationComponent implements OnInit {
           this.spinner.hide();
           if (response.isSuccess === true) {
             if (this.isEdit) {
-              this._notificationService.add(new Notification('success', "Location has been updated successfully."));
+              this._notificationService.add(new Notification('success', "Location updated successfully."));
             } else {
-              this._notificationService.add(new Notification('success', "Location has been added successfully."));
+              this._notificationService.add(new Notification('success', "Location created successfully."));
             }
             this.router.navigate(['/locations']);
           } else {

@@ -112,7 +112,7 @@ export class ChangePasswordComponent implements OnInit {
      this.userService.changePassword(sendModel).subscribe(response => {
         this.spinner.hide();
         if (response.isSuccess === true) {
-          this._notificationService.add(new Notification('success', "Password has been changed successfully."));
+          this._notificationService.add(new Notification('success', "Password changed successfully."));
           localStorage.clear();
           this.router.navigate(['/login']);
         } else {
@@ -130,7 +130,7 @@ export class ChangePasswordComponent implements OnInit {
     this.userService.changeAdminPassword(sendModel).subscribe(response => {
        this.spinner.hide();
        if (response.isSuccess === true) {
-         this._notificationService.add(new Notification('success', "Password has been changed successfully."));
+         this._notificationService.add(new Notification('success', "Password changed successfully."));
          localStorage.clear();
          this.router.navigate(['/admin']);
        } else {

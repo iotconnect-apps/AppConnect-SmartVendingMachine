@@ -258,9 +258,9 @@ export class AddProductsComponent implements OnInit {
         this.spinner.hide();
         if (response.isSuccess === true) {
           if (this.isEdit) {
-            this._notificationService.add(new Notification('success', "Product has been updated successfully."));
+            this._notificationService.add(new Notification('success', "Product updated successfully."));
           } else {
-            this._notificationService.add(new Notification('success', "Product has been added successfully."));
+            this._notificationService.add(new Notification('success', "Product created successfully."));
           }
           this.router.navigate(['/products']);
         } else {

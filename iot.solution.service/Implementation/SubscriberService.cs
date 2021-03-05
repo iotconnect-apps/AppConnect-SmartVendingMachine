@@ -22,14 +22,15 @@ namespace iot.solution.service.Implementation
         private readonly IHardwareKitRepository _hardwareKitRepository;
         private readonly ICompanyRepository _companyRepository;
         private readonly IUserRepository _userRepository;
-
-        public SubscriberService(LogHandler.Logger logger, IHardwareKitRepository hardwareKitRepository, IKitTypeRepository kitTypeRepository, ICompanyRepository companyRepository,IUserRepository userRepository)
+        private readonly IEmailHelper _emailHelper;
+        public SubscriberService(LogHandler.Logger logger, IHardwareKitRepository hardwareKitRepository, IKitTypeRepository kitTypeRepository, ICompanyRepository companyRepository,IUserRepository userRepository,IEmailHelper emailHelper)
         {
             _logger = logger;
             _subscriberHelper = new SubscriberHelper(logger);
             _hardwareKitRepository = hardwareKitRepository;
             _companyRepository = companyRepository;
             _userRepository = userRepository;
+            _emailHelper = emailHelper;
         }
         public Response.CountryResponse GetCountryLookUp()
         {
@@ -109,6 +110,7 @@ namespace iot.solution.service.Implementation
             {
                 requestData.User.PhoneCountryCode = requestData.User.PhoneCountryCode.Replace("+", "");
                 Entity.SaveCompanyResponse saveResult = _subscriberHelper.CreateCompany(requestData);
+                Entity.SubsciberCompanyDetails subscriptionDetail = GetSubscriberDetails(requestData.SolutionCode, requestData.User.Email);
                 if (saveResult != null && saveResult.PaymentTransactionId != null)
                 {
                     response.Data = saveResult;
@@ -144,9 +146,12 @@ namespace iot.solution.service.Implementation
                         dbUser.FirstName = objUser.FirstName;
                         dbUser.LastName = objUser.LastName;
                         dbUser.TimeZoneGuid = objUser.TimeZoneGuid;
+                        dbUser.SubscriptionEndDate = Convert.ToDateTime(subscriptionDetail.renewalDate);
                         _userRepository.Update(dbUser);
                     }
-
+                    string userName = objUser.FirstName + " " + objUser.LastName;
+                    _emailHelper.SendCompanyRegistrationEmail(userName, requestData.User.CompanyName, requestData.User.Email, requestData.User.Password);
+                    _emailHelper.SendCompanyRegistrationAdminEmail(userName, requestData.User.CompanyName, requestData.User.Email, requestData.User.Address + " , " + requestData.User.CityName, requestData.User.PhoneCountryCode + "-" + requestData.User.Phone);
                     response.Success = true;
                     response.Message = "";
                 }

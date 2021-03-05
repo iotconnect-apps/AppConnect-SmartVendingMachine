@@ -117,9 +117,9 @@ export class AdminUserAddComponent implements OnInit {
         if (response.isSuccess === true) {
           this.spinner.hide();
           if (response.data.updatedBy != null) {
-            this._notificationService.add(new Notification('success', "User has been updated successfully."));
+            this._notificationService.add(new Notification('success', "User updated successfully."));
           } else {
-            this._notificationService.add(new Notification('success', "User has been added successfully."));
+            this._notificationService.add(new Notification('success', "User created successfully."));
           }
           this.router.navigate(['/admin/users']);
         } else {

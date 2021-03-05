@@ -457,6 +457,46 @@ namespace IoTConnect.UserProvider
         }
 
         /// <summary>
+        /// Get active or inactive User count. Supply Company information to get companywise user count.
+        /// </summary>
+        /// <param name="companyGuid">The company unique identifier(Company id is optional).</param>
+        /// <param name="status">Status should be active/inactive or optional.</param>
+        /// <returns></returns>
+        public async Task<DataResponse<UserQuotaExhaustedNotificationResult>> GetQuotaExhaustedNotification(string token)
+        {
+            try
+            {
+                var portalApi = await _ioTConnectAPIDiscovery.GetPortalUrl(_envCode, _solutionKey, IoTConnectBaseURLType.UserBaseUrl);
+                string accessTokenUrl = string.Concat(portalApi, UserApi.QuotaExhaustedNotification);
+                string formattedUrl = String.Format(accessTokenUrl, Constants.userVersion);
+                var userQuotaResult = await formattedUrl.WithHeaders(new { Content_type = Constants.contentType, Authorization = Constants.bearerTokenType + token })
+                                                 .GetJsonAsync<DataResponse<List<UserQuotaExhaustedNotificationResult>>>();
+                return new DataResponse<UserQuotaExhaustedNotificationResult>(null)
+                {
+                    data = userQuotaResult.data.FirstOrDefault(),
+                    message = userQuotaResult.message,
+                    status = true
+                };
+            }
+            catch (IoTConnectException ex)
+            {
+                List<ErrorItemModel> errorItemModels = new List<ErrorItemModel>();
+                errorItemModels.AddRange(ex.error);
+                return new DataResponse<UserQuotaExhaustedNotificationResult>(null)
+                {
+                    errorMessages = errorItemModels,
+                    message = ex.message,
+                    status = false
+                };
+            }
+            catch (Exception ex)
+            {
+                await _ioTConnectAPIDiscovery.LoggedException(_envCode, ex, "User", "GetQuotaExhaustedNotification()");
+                throw ex;
+            }
+        }
+
+        /// <summary>
         /// Forgot password.
         /// </summary>
         /// <param name="EmailId">Email Id.</param>

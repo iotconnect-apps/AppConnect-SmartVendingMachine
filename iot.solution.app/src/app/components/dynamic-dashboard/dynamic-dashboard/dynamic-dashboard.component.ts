@@ -583,12 +583,12 @@ export class DynamicDashboardComponent implements OnInit,OnDestroy {
 			if(this.dashboardWidgets[this.editWidgetIndex].componentName == 'widget-chart-b'){
 				if(this.dashboardWidgets[this.editWidgetIndex].widgetProperty.telemetryUniqueId != ''){
 					if(this.dashboardWidgets[this.editWidgetIndex].widgetProperty.telemetryAttributes.length == 0){
-						this._notificationService.handleResponse({message:"You must select atleast one attribute to save widget."},"error");
+						this._notificationService.handleResponse({message:"You must select at least one attribute to save widget."},"error");
 						isProcess = false;
 					}
 				}
 				else{
-					this._notificationService.handleResponse({message:"You must select atleast one vending to save widget."},"error");
+					this._notificationService.handleResponse({message:"You must select at least one vending to save widget."},"error");
 					isProcess = false;
 				}
 			}
@@ -608,7 +608,7 @@ export class DynamicDashboardComponent implements OnInit,OnDestroy {
 			for (var i = this.dashboardWidgets.length - 1; i >= 0; i--) {
 				if(this.dashboardWidgets[i].componentName == 'widget-chart-b'){
 					if(this.dashboardWidgets[i].widgetProperty.telemetryUniqueId == ''){
-						this._notificationService.handleResponse({message:"You must select atleast one vending for telemetry to save widget."},"error");
+						this._notificationService.handleResponse({message:"You must select at least one vending for telemetry to save widget."},"error");
 						isOk = false;
 					}
 				}

@@ -79,10 +79,10 @@ BEGIN
 		FROM @ComapnyXml.nodes('/items/item') a(b)
 
 		BEGIN TRAN
-		IF NOT EXISTS(SELECT 1 from dbo.[Company] d (NOLOCK) INNER JOIN #tempCompany te ON te.[guid] = d.[guid] WHERE te.hasGuid = 1) AND @action='update'
-				BEGIN
-					 SET @action='insert'
-				END 
+		--IF NOT EXISTS(SELECT 1 from dbo.[Company] d (NOLOCK) INNER JOIN #tempCompany te ON te.[guid] = d.[guid] WHERE te.hasGuid = 1) AND @action='update'
+		--		BEGIN
+		--			 SET @action='insert'
+		--		END 
 
 			IF(@action = 'insert') 
 			BEGIN

@@ -18,6 +18,9 @@
     <PackageReference Include="Microsoft.Azure.ServiceBus" Version="4.1.1" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\iot.solution.dataacess\iot.solution.dataacess.csproj" />
+    <ProjectReference Include="..\iot.solution.entity\iot.solution.entity.csproj" />
+    <ProjectReference Include="..\iot.solution.helper\iot.solution.helper.csproj" />
     <ProjectReference Include="..\iot.solution.loghandler\iot.solution.loghandler.csproj" />
   </ItemGroup>
   <PropertyGroup>

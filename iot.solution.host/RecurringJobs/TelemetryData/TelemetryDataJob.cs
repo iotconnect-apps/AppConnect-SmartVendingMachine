@@ -59,5 +59,19 @@ namespace host.iot.solution.RecurringJobs
             }
             _logger.InfoLog(LogHandler.Constants.ACTION_EXIT, null, "", "", this.GetType().Name, MethodBase.GetCurrentMethod().Name);
         }
+
+        public void SubscriptionMailProcess()
+        {
+            _logger.InfoLog(LogHandler.Constants.ACTION_ENTRY, null, "", "", this.GetType().Name, MethodBase.GetCurrentMethod().Name);
+            try
+            {
+                var status = _chartService.SendSubscriptionNotification();
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorLog(ex, this.GetType().Name, MethodBase.GetCurrentMethod().Name);
+            }
+            _logger.InfoLog(LogHandler.Constants.ACTION_EXIT, null, "", "", this.GetType().Name, MethodBase.GetCurrentMethod().Name);
+        }
     }
 }

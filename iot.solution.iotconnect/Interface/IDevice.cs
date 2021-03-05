@@ -24,5 +24,6 @@ namespace IoTConnect.DeviceProvider.Interface
         Task<DataResponse<AllottedDeviceToUserResult>> AllottedDeviceToUser(string userId, AllottedDeviceUserModel request);
         Task<DataResponse<List<AllotedDeviceResult>>> GetAllAllottedDevice(PagingModel pagingModel);
         Task<DataResponse<AllotedDeviceResult>> GetSingleAllottedDevice(string userGuid, PagingModel pagingModel);
+        Task<DataResponse<StompReaderData>> GetStompConfiguartionData(string configuartionType);
     }
 }

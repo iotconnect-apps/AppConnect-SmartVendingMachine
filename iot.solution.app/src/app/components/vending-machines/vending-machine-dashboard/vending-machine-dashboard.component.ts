@@ -453,6 +453,9 @@ export class VendingMachineDashboardComponent implements OnInit {
   }
   public on_next = (message: Message) => {
     let obj: any = JSON.parse(message.body);
+    for (let key in obj.data.data.reporting) {
+      obj.data.data.reporting[key] = (obj.data.data.reporting[key].replace(',', ''));
+    }
     let reporting_data = obj.data.data.reporting
     this.isConnected = true;
 

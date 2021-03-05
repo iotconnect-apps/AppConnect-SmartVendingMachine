@@ -30,6 +30,7 @@ namespace component.helper
         public static char EnableDebugInfo { get { return '0'; } }
         public static string Version { get; set; } = "v1";
         public static string UploadBasePath { get; set; } = "wwwroot/";
+        public static string EmailTemplatePath { get; set; } = "EmailTemplate/";
         public static bool isTitleCase { get; set; } = true;
         public static string CompanyFilePath { get; set; } = "CompanyFiles/EntityImages/";
         public static string ProductFilePath { get; set; } = "CompanyFiles/ProductImages/";
@@ -50,8 +51,31 @@ namespace component.helper
         public LoggerSetting Logger { get; set; }
         public HangFireSetting HangFire { get; set; }
         public List<IOTConnectSetting> IOTConnectSettings { get; set; }
+        public SmtpSetting SmtpSetting { get; set; }
+        public EmailTemplateSettings EmailTemplateSettings { get; set; }
+    }
+    public class SmtpSetting
+    {
+        public string Host { get; set; }
+        public int Port { get; set; }
+        public string UserName { get; set; }
+        public string FromDisplayName { get; set; }
+        public string FromMail { get; set; }
+        public string Password { get; set; }
+        public string Regards { get; set; }
     }
 
+    public class EmailTemplateSettings
+    {
+        public string UserList { get; set; }
+        public string CompanyRegistrationSubject { get; set; }
+        public string CompanyAdminUserList { get; set; }
+        public string SubscriptionExpirySubject { get; set; }
+        public string SubscriptionExpiryUserList { get; set; }
+        public string CompanyUserList { get; set; }
+        public string ImageBaseUrl { get; set; }
+        public string MailSolutionName { get; set; }
+    }
     public class IOTConnectSetting
     {
         public string SettingType { get; set; }

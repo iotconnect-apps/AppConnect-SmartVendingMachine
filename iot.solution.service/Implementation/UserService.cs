@@ -323,6 +323,12 @@ namespace iot.solution.service.Data
                 result.Success = identityResult.status;
                 if (identityResult != null && identityResult.status)
                 {
+                    var subscriptionResult = _iotConnectClient.User.GetQuotaExhaustedNotification(token).Result;
+                    //var res = _userRepository.GetSubscriptionStatus(identityResult.data.data.userGuid);
+                    if (subscriptionResult.data.expiredDate < DateTime.UtcNow)
+                    {
+                        return new Entity.ActionStatus(false, "Subscription expired");
+                    }
                     result.Data = identityResult.data;
                     //SolutionConfiguration.CurrentUserId = Guid.Parse(identityResult.data.data.userGuid);
                     //SolutionConfiguration.SolutionId = Guid.Parse(identityResult.data.data.solutionGuid);

@@ -146,15 +146,8 @@ namespace host.iot.solution.Controllers
             Entity.BaseResponse<List<Entity.LookupItemWithDescription>> response = new Entity.BaseResponse<List<Entity.LookupItemWithDescription>>(true);
             try
             {
-                List<Entity.LookupItem> templates = _service.GetTemplate(false);
-                if (templates.Count > 0)
-                {
-                    Guid templateId = new Guid(templates[0].Value);
-                    response.Data = _service.GetTemplateAttribute(templateId);
-                }
-                else {
-                    return new Entity.BaseResponse<List<Entity.LookupItemWithDescription>>(false, "Device template not found");
-                }
+                Guid templateId = new Guid(_service.GetIotTemplateGuidByCode());
+                response.Data = _service.GetTemplateAttribute(templateId);
             }
             catch (Exception ex)
             {

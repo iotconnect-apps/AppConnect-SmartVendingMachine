@@ -315,9 +315,9 @@ export class AddInventoryComponent implements OnInit {
 
         if (response.isSuccess === true) {
           if (this.isEdit) {
-            this._notificationService.add(new Notification('success', "Inventory has been updated successfully."));
+            this._notificationService.add(new Notification('success', "Inventory updated successfully."));
           } else {
-            this._notificationService.add(new Notification('success', "Inventory has been added successfully."));
+            this._notificationService.add(new Notification('success', "Inventory created successfully."));
           }
           this.router.navigate(['/inventory']);
         } else {

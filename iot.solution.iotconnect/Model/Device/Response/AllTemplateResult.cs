@@ -83,5 +83,9 @@ namespace IoTConnect.Model
         /// Is edge Support?
         /// </summary>
         public bool IsEdgeSupport { get; set; }
+        public bool gatewaySupport { get; set; }
+        public bool isLowBandwidth { get; set; }
+        public bool isIotEdgeEnable { get; set; }
+        public bool isSolutionTemplate { get; set; }
     }
 }

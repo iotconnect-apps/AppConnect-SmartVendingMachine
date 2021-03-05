@@ -68,7 +68,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.userName = this.currentUser.userDetail.fullName;
-    this.getStompConfig();
+    //this.getStompConfig();
     this.isAdmin = this.currentUser.userDetail.isAdmin;
     this._appConstant.username = this.userName;
   }

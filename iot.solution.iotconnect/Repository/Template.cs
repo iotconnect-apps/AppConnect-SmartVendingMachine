@@ -236,7 +236,7 @@ namespace IoTConnect.TemplateProvider
 
                 return new DataResponse<List<AllTemplateResult>>(null)
                 {
-                    data = result.Data,
+                    data = result.Data.Where(t => t.isSolutionTemplate == true).ToList(),
                     message = result.Message,
                     status = true
                 };

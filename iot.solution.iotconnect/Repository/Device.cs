@@ -1086,7 +1086,36 @@ namespace IoTConnect.DeviceProvider
                 throw ex;
             }
         }
+        public async Task<DataResponse<StompReaderData>> GetStompConfiguartionData(string configuartionType)
+        {
+            try
+            {
+                var portalApi = await _ioTConnectAPIDiscovery.GetPortalUrl(_envCode, _solutionKey, IoTConnectBaseURLType.TelemetryBaseUrl);
+                string accessTokenUrl = string.Concat(portalApi, DeviceApi.GetStompConfiguartionData);
+                string formattedUrl = String.Format(accessTokenUrl, Constants.deviceVersion);
+                var res = await formattedUrl.WithHeaders(new { Content_type = Constants.contentType, Authorization = Constants.bearerTokenType + _token })
+                                            .SetQueryParams(new { type = configuartionType })
+                   .GetJsonAsync<BaseResponse<StompReaderData>>();
+                return new DataResponse<StompReaderData>(null)
+                {
+                    data = res.Data,
+                    message = res.Message,
+                    status = true
+                };
+            }
+            catch (IoTConnectException ex)
+            {
 
+                List<ErrorItemModel> errorItemModels = new List<ErrorItemModel>();
+                errorItemModels.AddRange(ex.error);
+                return new DataResponse<StompReaderData>(null)
+                {
+                    errorMessages = errorItemModels,
+                    message = ex.message,
+                    status = false
+                };
+            }
+        }
 
         #endregion
 

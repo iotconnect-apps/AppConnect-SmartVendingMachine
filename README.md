@@ -1,2 +1,1 @@
-# AppConnect-SmartVendingMachine
-Partner program AppConnect : Smart Vending Machine
+# sw-iot-solution-smart-vending-machine

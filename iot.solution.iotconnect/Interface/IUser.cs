@@ -85,5 +85,7 @@ namespace IoTConnect.UserProvider
         /// <param name="companyGuid">The company unique identifier.</param>
         /// <returns></returns>
         Task<DataResponse<SingleUserCountResult>> UserCount(string status, string companyGuid = "");
+
+        Task<DataResponse<UserQuotaExhaustedNotificationResult>> GetQuotaExhaustedNotification(string token);
     }
 }

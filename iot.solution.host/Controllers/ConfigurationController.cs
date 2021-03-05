@@ -32,9 +32,9 @@ namespace host.iot.solution.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route(ConfigurationRoute.Route.Get, Name = ConfigurationRoute.Name.Get)]
-        public Entity.BaseResponse<Response.ConfgurationResponse> Get(string key)
+        public Entity.BaseResponse<Response.StompReaderData> Get(string key)
         {
-            Entity.BaseResponse<Response.ConfgurationResponse> response = new Entity.BaseResponse<Response.ConfgurationResponse>(true);
+            Entity.BaseResponse<Response.StompReaderData> response = new Entity.BaseResponse<Response.StompReaderData>(true);
             try
             {
                 response.Data = _configurationService.GetConfguration(key);
@@ -42,7 +42,7 @@ namespace host.iot.solution.Controllers
             catch (Exception ex)
             {
                 base.LogException(ex);
-                return new Entity.BaseResponse<Response.ConfgurationResponse>(false, ex.Message);
+                return new Entity.BaseResponse<Response.StompReaderData>(false, ex.Message);
             }
             return response;
         }

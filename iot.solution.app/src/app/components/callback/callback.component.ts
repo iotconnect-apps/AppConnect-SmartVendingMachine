@@ -47,20 +47,21 @@ export class CallbackComponent implements OnInit {
                 }
               }
               localStorage.setItem('currentUser', JSON.stringify(data));
-              this._notificationService.add(new Notification('success', 'Logged in successfully'));
+              this._notificationService.handleResponse({ message: 'Logged in successfully' }, "success");
               this.router.navigate(['/dashboard']);
             }
             else {
               this.IdsService.endSignoutMainWindow();
-              this._notificationService.add(new Notification('error', response.message));
+              this._notificationService.handleResponse({ message: response.message }, "error");
               this.router.navigate(['/']);
+              setTimeout(() => {
+              }, 10000);
             }
           }, error => {
             this.spinner.hide();
-            this._notificationService.add(new Notification('error', error));
+            this._notificationService.handleResponse(error, "error");
           });
         }
       })
-    //this.router.navigate(['/dashboard']);
   }
 }

@@ -21,6 +21,10 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Mapper = iot.solution.service.Mapper;
+using System.Net;
+using System.Net.Mail;
+using component.helper;
+using component.helper.Interface;
 
 namespace host.iot.solution
 {
@@ -71,6 +75,19 @@ namespace host.iot.solution
                 services.AddControllers();
                 ConfigureHangfireSettings(services);
                 component.helper.DependencyResolver.Init(services);
+                services.AddScoped<SmtpClient>((serviceProvider) =>
+                {
+                    var config = serviceProvider.GetRequiredService<IConfiguration>();
+                    return new SmtpClient()
+                    {
+                        Host = component.helper.SolutionConfiguration.Configuration.SmtpSetting.Host,
+                        Port = component.helper.SolutionConfiguration.Configuration.SmtpSetting.Port,
+                        Credentials = new NetworkCredential(
+                                component.helper.SolutionConfiguration.Configuration.SmtpSetting.UserName,
+                                component.helper.SolutionConfiguration.Configuration.SmtpSetting.Password
+                            )
+                    };
+                });
             }
             catch (Exception ex)
             {
@@ -92,7 +109,18 @@ namespace host.iot.solution
                 }
                 app.UseCorsMiddleware();
                 SwaggerExtension.Configure(app);
-                app.UseStaticFiles();
+                app.UseStaticFiles(new StaticFileOptions()
+                {
+                    OnPrepareResponse = (context) =>
+                    {
+
+                        if (context.Context.Request.Path.ToString().ToLower().Contains("configuration"))
+                        {
+                            context.Context.Response.Redirect("/swagger/index.html");
+                        }
+                    }
+                });
+                //app.UseStaticFiles();
                 app.UseRouting();
                 app.UseAuthentication();
                 app.UseAuthorization();
@@ -132,6 +160,9 @@ namespace host.iot.solution
                job => job.HourlyProcess(),  string.Format("0 */{0} * * *", component.helper.SolutionConfiguration.Configuration.HangFire.TelemetryHours));
             RecurringJob.AddOrUpdate<ITelemetryDataJob>(
                job => job.ShelfConsumptionProcess(), string.Format("*/{0} * * * *", component.helper.SolutionConfiguration.Configuration.HangFire.ShelfConsumptionMinutes));
+            RecurringJob.AddOrUpdate<ITelemetryDataJob>(
+           job => job.SubscriptionMailProcess(),
+           Cron.Daily);
         }
         private void ConfigureServicesCollection(IServiceCollection services)
         {
@@ -161,6 +192,7 @@ namespace host.iot.solution
 
             IocConfigurations.Initialize(services);
             services.AddScoped<ITelemetryDataJob, TelemetryDataJob>();
+            services.AddScoped<IEmailHelper, EmailHelper>();
         }
         private void ConfigureMessaging(IServiceCollection services)
         {

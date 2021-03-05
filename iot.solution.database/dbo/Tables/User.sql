@@ -15,6 +15,7 @@
     [createdBy]    UNIQUEIDENTIFIER NULL,
     [updatedDate]  DATETIME         NULL,
     [updatedBy]    UNIQUEIDENTIFIER NULL,
+    [subscriptionEndDate]  DATETIME NULL,
     CONSTRAINT [PK__User__497F6CB4FD41A318] PRIMARY KEY CLUSTERED ([guid] ASC)
 );
 

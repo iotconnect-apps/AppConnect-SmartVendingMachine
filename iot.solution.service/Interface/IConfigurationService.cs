@@ -7,6 +7,6 @@ namespace iot.solution.service.Interface
 {
     public interface IConfigurationService
     {
-        public ConfgurationResponse GetConfguration(string key);
+        public StompReaderData GetConfguration(string key);
     }
 }

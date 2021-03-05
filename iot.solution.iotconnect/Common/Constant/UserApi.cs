@@ -23,5 +23,6 @@
         internal const string TimeZones = "api/v{0}/Master/timezone";
         internal const string UpdateRole = "api/v{0}/Role/{1}";
         internal const string DeleteRole = "api/v{0}/Role/{1}";
+        internal const string QuotaExhaustedNotification = "api/v{0}/User/quotaExhaustedNotification";
     }
 }

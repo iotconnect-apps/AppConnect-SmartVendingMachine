@@ -239,9 +239,9 @@ return local;
         if (response.isSuccess === true) {
           this.spinner.hide();
           if (this.isEdit) {
-            this._notificationService.add(new Notification('success', "Scheduled Maintenance has been updated successfully."));
+            this._notificationService.add(new Notification('success', "Maintenance updated successfully."));
           } else {
-            this._notificationService.add(new Notification('success', "Scheduled Maintenance has been added successfully."));
+            this._notificationService.add(new Notification('success', "Maintenance created successfully."));
           }
           this.router.navigate(['/maintenance']);
         } else {

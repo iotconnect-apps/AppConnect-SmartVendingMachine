@@ -1463,6 +1463,9 @@ namespace iot.solution.model.Models
                 entity.Property(e => e.UpdatedDate)
                     .HasColumnName("updatedDate")
                     .HasColumnType("datetime");
+                entity.Property(e => e.SubscriptionEndDate)
+                 .HasColumnName("subscriptionEndDate")
+                 .HasColumnType("datetime");
             });
 
             modelBuilder.Entity<MasterWidget>(entity =>

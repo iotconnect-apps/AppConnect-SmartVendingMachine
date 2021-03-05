@@ -47,7 +47,7 @@
             <div class="col-md-6">
               <mat-label>Product Image</mat-label>
               <fieldset class="form-group">
-                <label for="myFile" class="upload-file">
+                <label for="myFile" class="upload-file" title=".jpg, .jpeg, .png">
                   <input formControlName="imageFile" #myFile id="myFile" (change)="handleImageInput($event)" class="upload-image" type="file" accept=".jpg, .jpeg, .png" />
                   <div class="form-control-feedback" *ngIf="productForm.controls['imageFile'].errors">
                     <p class="form-tooltip-error sm" [ngClass]="{'error':true}"

@@ -14,6 +14,8 @@ import { AppConstant, DeleteAlertDataModel } from "../../../app.constants";
 	styleUrls: ['./roles-list.component.css']
 })
 export class RolesListComponent implements OnInit {
+
+currentUser = JSON.parse(localStorage.getItem("currentUser"));
 	changeStatusDeviceName:any;
 	changeStatusDeviceStatus:any;
 	changeDeviceStatus:any;

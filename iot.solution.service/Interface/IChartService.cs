@@ -18,6 +18,7 @@ namespace iot.solution.service.Interface
         List<Response.InventoryConsumptionByProductResponse> GetInventoryConsumptionByProduct(Request.ChartRequest request);
         List<Response.EnergyUsageResponse> GetEnergyUsage(Request.ChartRequest request);
         Entity.BaseResponse<List<Response.DeviceStatisticsResponse>> GetStatisticsByDevice(Request.ChartRequest request);
-        
+        Entity.ActionStatus SendSubscriptionNotification();
+
     }
 }

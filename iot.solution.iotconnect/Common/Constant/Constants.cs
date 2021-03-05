@@ -14,7 +14,7 @@ namespace IoTConnect.Common.Constant
         internal const string masterVersion = "1.1";
         internal const string authVersion = "2";
         internal const string entityVersion = "1.1";
-        internal const string deviceVersion = "1.1";
+        internal const string deviceVersion = "2";//"1.1";
         internal const string firmwareVersion = "1.1";
         internal const string eventVersion = "1.1";
         internal const string contentType = "application/json";

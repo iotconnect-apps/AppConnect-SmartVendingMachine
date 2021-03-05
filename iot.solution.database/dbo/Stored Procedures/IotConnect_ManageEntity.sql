@@ -74,7 +74,10 @@ BEGIN
 	FROM @EntityXml.nodes('/items/item') a(b)
 
 		BEGIN TRAN
-
+		If not exists (select 1 from dbo.[Entity] where companyGuid=@companyGuid) and @action='update'
+			begin
+				set @action = 'insert'
+			end
 			IF(@action = 'insert') 
 			BEGIN
 			If not exists (select 1 from dbo.[Entity] where companyGuid=@companyGuid)

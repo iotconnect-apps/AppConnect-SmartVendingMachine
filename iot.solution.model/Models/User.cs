@@ -21,5 +21,6 @@ namespace iot.solution.model.Models
         public Guid? CreatedBy { get; set; }
         public DateTime? UpdatedDate { get; set; }
         public Guid? UpdatedBy { get; set; }
+        public DateTime? SubscriptionEndDate { get; set; }
     }
 }

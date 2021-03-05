@@ -264,18 +264,26 @@ namespace iot.solution.service.Data
             List<Entity.LookupItemWithDescription> result = new List<Entity.LookupItemWithDescription>();
             try
             {
-                var template = _kitTypeRepository.FindBy(t => t.Guid == templateId).FirstOrDefault();
-                if (template != null)
+                List<IoTConnect.Model.AttributeResult> attributeList = _iotConnectClient.Template.AllAttribute(templateId.ToString(), new IoTConnect.Model.PagingModel() { }, "").Result.data;
+
+                result = attributeList.Select(x => new Entity.LookupItemWithDescription()
                 {
-                  
-                    result.AddRange(from t in _kitTypeAttributeRepository.FindBy(t => t.TemplateGuid == templateId).ToList()
-                                    select new Entity.LookupItemWithDescription()
-                                    {
-                                        Text = t.LocalName,//string.Format("{0}({1})", t.LocalName, t.Tag),
-                                        Value = t.Guid.ToString().ToUpper(), //string.Format("{0}({1})", t.LocalName, t.Tag)
-                                        Description=t.Description.ToString()
-                                    });
-                }
+                    Text = x.localName,
+                    Value = x.guid.ToString().ToUpper(),
+                    Description = x.localName
+                }).ToList();
+                //var template = _kitTypeRepository.FindBy(t => t.Guid == templateId).FirstOrDefault();
+                //if (template != null)
+                //{
+
+                //    result.AddRange(from t in _kitTypeAttributeRepository.FindBy(t => t.TemplateGuid == templateId).ToList()
+                //                    select new Entity.LookupItemWithDescription()
+                //                    {
+                //                        Text = t.LocalName,//string.Format("{0}({1})", t.LocalName, t.Tag),
+                //                        Value = t.Guid.ToString().ToUpper(), //string.Format("{0}({1})", t.LocalName, t.Tag)
+                //                        Description=t.Description.ToString()
+                //                    });
+                //}
             }
             catch (Exception ex)
             {
@@ -288,16 +296,23 @@ namespace iot.solution.service.Data
             List<Entity.LookupItem> result = new List<Entity.LookupItem>();
             try
             {
-                var template = _kitTypeRepository.FindBy(t => t.Guid == templateId).FirstOrDefault();
-                if (template != null)
+                List<IoTConnect.Model.AttributeResult> attributeList = _iotConnectClient.Template.AllAttribute(templateId.ToString(), new IoTConnect.Model.PagingModel() { }, "").Result.data;
+
+                result = attributeList.Select(x => new Entity.LookupItem()
                 {
-                    result = (from t in _kitTypeCommandRepository.GetAll()
-                              select new Entity.LookupItem()
-                              {
-                                  Text = t.Name,
-                                  Value = t.Guid.ToString().ToUpper()
-                              }).ToList();
-                }
+                    Text = x.localName,
+                    Value = x.guid.ToString().ToUpper()
+                }).ToList();
+                //var template = _kitTypeRepository.FindBy(t => t.Guid == templateId).FirstOrDefault();
+                //if (template != null)
+                //{
+                //    result = (from t in _kitTypeCommandRepository.GetAll()
+                //              select new Entity.LookupItem()
+                //              {
+                //                  Text = t.Name,
+                //                  Value = t.Guid.ToString().ToUpper()
+                //              }).ToList();
+                //}
             }
             catch (Exception ex)
             {
